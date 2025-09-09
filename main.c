@@ -10,6 +10,15 @@ void test_receive_transmit() {
     }
 }
 
+void test_write(){
+    uint8_t val = rand();
+    printf("Writing %d to PA1...\n", val);
+    xmem_write(val, PA1);
+    printf("Write function completed\n");
+    uint8_t storedVal = xmem_read(PA1);
+    printf("Stored value: %d\n\n", storedVal);
+}
+
 void test_stdio() {
     char input[50];
     printf("Write something:\n");
@@ -34,7 +43,8 @@ void test_latch() {
 int main() {
     uart_init(UBRR);
     xmem_init();
-    test_latch();
+    SRAM_test();
+    // test_write();
     // test_receive_transmit();
     // test_stdio();
     return 0;
