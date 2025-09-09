@@ -1,4 +1,5 @@
 #include "uart.h"
+#include "xmem.h"
 #include "util/delay.h"
 
 void test_receive_transmit() {
@@ -16,9 +17,25 @@ void test_stdio() {
     printf("You wrote: %s\n", input);
 }
 
+void test_latch() {
+    uint8_t val = 0;
+    while (1) {
+        printf("Setting PA0 to %d\n", val);
+        // Count 0 -> 7
+        xmem_write(val, PA0);
+        _delay_ms(3000);
+        
+        val++;
+        val %= 8;
+    }
+}
+
+
 int main() {
     uart_init(UBRR);
-    test_receive_transmit();
+    xmem_init();
+    test_latch();
+    // test_receive_transmit();
     // test_stdio();
     return 0;
 }
