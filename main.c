@@ -1,5 +1,7 @@
 #include "uart.h"
 #include "xmem.h"
+#include "adc.h"
+#include "joystick.h"
 #include "util/delay.h"
 
 void test_receive_transmit() {
@@ -39,13 +41,32 @@ void test_latch() {
     }
 }
 
+void test_adc() {
+    // volatile uint8_t x = ADC[0];
+    // volatile uint8_t y = ADC[0];
+    // volatile uint8_t slider1 = ADC[0];
+    // volatile uint8_t slider2 = ADC[0];
+
+
+    // printf("X-pos: %4d, Y-pos: %4d\n", x, y);
+    for (uint8_t i; i < 4; i++){
+        volatile uint8_t val = ADC[i];
+        printf("Channel: %02X\tValue: %4d\n", i, val);
+    }
+}
 
 int main() {
     uart_init(UBRR);
     xmem_init();
-    SRAM_test();
+    // SRAM_test();
     // test_write();
     // test_receive_transmit();
     // test_stdio();
+    adc_init();
+    while (1){
+        volatile pos_t pos = pos_read();
+        printf("X: %u\tY: %u\n", pos.x, pos.y);
+        _delay_ms(4000);
+    }
     return 0;
 }
