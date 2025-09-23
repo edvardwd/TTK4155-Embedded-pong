@@ -1,52 +1,49 @@
 #include "joystick.h"
 #include "adc.h"
 #include "avr/io.h"
-#include "util/delay.h"
+#include "avr/delay.h"
 
 
 // void pos_calibrate() {
-//     uint8_t x_center = adc_read(0);
+//     uint8_t x_center = 100;
 //     uint8_t y_center = adc_read(1);
 // }
 
-
-pos_t pos_read() {
-    // Sample values
-    ADC[0] = 0; // sets WR high and samples values
-    // while(!(PORTB & (1 << BUSY))) printf("BUSY\n"); // wait until conversion is done
-    _delay_us(750);
-
-
-
-    pos_t pos;
-    volatile uint8_t raw_x = adc_read(0);
-    volatile uint8_t raw_y = adc_read(0);
-    volatile uint8_t slider1 = adc_read(0);
-    volatile uint8_t slider2 = adc_read(0);
-    
-    pos.x = raw_x;
-    pos.y = raw_y;
-
-    // if (pos.x > 100) pos.x = 100;500 
-    // if (pos.x < -100) pos.x = -100;
-    // if (pos.y > 100) pos.y = 100;
-    // if (pos.y < -100) pos.y = -100;
-    
-    return pos;
+int8_t map_to_percent(uint8_t raw, uint8_t min, uint8_t center, uint8_t max) {
+    int8_t percent;
+    if (raw <= center) {
+        percent = -100 + (int16_t)(raw - min) * 100 / (center - min);
+    } else {
+        percent = (int16_t)(raw - center) * 100 / (max - center);
+    }
+    return clip_value(percent, -100, 100);
 }
 
 
-/*typedef enum {
-    NEUTRAL,
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT
-} joystick_dir_t;
+int8_t clip_value(int8_t val, int8_t min, int8_t max){
+    if (val < min) return min;
+    if (val > max) return max;
+    return val;
+}
 
-joystick_dir_t joystick_get_dir() {
-    pos_t pos = pos_read();
-    int8_t threshold = 20;
 
-    if 
-}*/
+
+void update_pos(pos_t* joystick, pos_t* slider) {
+    // Sample values
+    *ADC = 0; // sets WR high and samples values
+    while(!(PINB & (1 << BUSY))); // wait until conversion is done
+
+    volatile uint8_t raw_joystick_x = adc_read();
+    volatile uint8_t raw_joystick_y = adc_read();
+    volatile uint8_t raw_slider_y = adc_read();
+    volatile uint8_t raw_slider_x = adc_read();
+    
+    joystick->x = map_to_percent(raw_joystick_x, X_MIN, X_CENTER, X_MAX);
+    joystick->y = map_to_percent(raw_joystick_y, Y_MIN, Y_CENTER, Y_MAX);
+    slider->x = clip_value(((int16_t) raw_slider_x*100 >> 7) - 100, -100, 100); 
+    slider->y = clip_value(((int16_t) raw_slider_y*100 >> 7) - 100, -100, 100);
+    
+}
+
+
+

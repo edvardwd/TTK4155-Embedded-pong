@@ -2,7 +2,7 @@
 #include "xmem.h"
 #include "adc.h"
 #include "joystick.h"
-#include "util/delay.h"
+#include "avr/delay.h"
 
 void test_receive_transmit() {
     while (1) {
@@ -54,7 +54,7 @@ void test_adc() {
         printf("Channel: %02X\tValue: %4d\n", i, val);
     }
 }
-
+//
 int main() {
     uart_init(UBRR);
     xmem_init();
@@ -63,10 +63,12 @@ int main() {
     // test_receive_transmit();
     // test_stdio();
     adc_init();
+    volatile pos_t joystick;
+    volatile pos_t slider;
     while (1){
-        volatile pos_t pos = pos_read();
-        printf("X: %u\tY: %u\n", pos.x, pos.y);
-        _delay_ms(4000);
+        update_pos(&joystick, &slider);
+        printf("X: %d Y: %d \nX: %d Y: %d\n", joystick.x, joystick.y, slider.x, slider.y);
+        printf("################################\n");
     }
     return 0;
 }

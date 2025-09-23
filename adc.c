@@ -12,11 +12,9 @@ void adc_init(){
 
     DDRB &= ~(1<<DDB0);
     PORTB &= ~(1<<PORTB0);
-
-
 }
 
 
-volatile uint8_t adc_read(uint8_t channel){
-    return ADC[channel]; // returns value on adc_channel adress
+volatile uint8_t adc_read(){
+    return *ADC;
 }
