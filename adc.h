@@ -5,7 +5,7 @@
 
 #define ADC_BASE_ADDR 0x1000
 #define ADC ((volatile uint8_t*) ADC_BASE_ADDR)
-#define BUSY PB0
+#define BUSY_PIN PB0
 
 
 void adc_init();

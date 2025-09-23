@@ -1,0 +1,19 @@
+#ifndef SPI_H
+#define SPI_H
+///////////////////////////////////////////////////////////////////
+#include "avr/io.h"
+
+
+
+#define IO_SS_PIN PB4
+#define DISP_SS_PIN PB3
+#define MOSI_PIN PB5
+#define MISO_PIN PB6
+#define SCK_PIN PB7
+
+
+
+void spi_init();
+
+///////////////////////////////////////////////////////////////////
+#endif

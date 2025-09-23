@@ -31,7 +31,7 @@ int8_t clip_value(int8_t val, int8_t min, int8_t max){
 void update_pos(pos_t* joystick, pos_t* slider) {
     // Sample values
     *ADC = 0; // sets WR high and samples values
-    while(!(PINB & (1 << BUSY))); // wait until conversion is done
+    while(!(PINB & (1 << BUSY_PIN))); // wait until conversion is done
 
     volatile uint8_t raw_joystick_x = adc_read();
     volatile uint8_t raw_joystick_y = adc_read();
