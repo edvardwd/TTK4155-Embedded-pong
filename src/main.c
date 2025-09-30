@@ -69,24 +69,31 @@ int main() {
     volatile pos_t slider;
 
     spi_master_init();
-    oled_init_minimal();
-    // oled_write_cmd(0xa5); // Entire display ON
+    oled_init();
+    oled_write_cmd(0xa5); // Entire display ON
 
-    char* STRING = "abcdefghijklmnopqrstuvwxyz";
+    //char* STRING = "abcdefghijklmnopqrstuvwxyz";
 
 
     // oled_write_cmd(0x05);
 
     // Trigger LEDs
     spi_master_select_slave(IO_SS_PIN);
-    char* BYTES[] = {0x05, 0, 1, 1, 1, 2, 1, 3, 1, 4, 1, 5, 1};
-    spi_master_transmit_bytes(BYTES, sizeof(BYTES));
+    spi_master_transmit_byte(0x05);
+    _delay_us(40);
+    spi_master_transmit_byte(2);
+    _delay_us(1);
+    spi_master_transmit_byte(2);
+    PORTB |= (1 << IO_SS_PIN); // Deselect
 
-    for (uint8_t i = 0; i < sizeof(BYTES); i++){
-        spi_master_select_slave(IO_SS_PIN);
-        spi_master_transmit_byte(BYTES[i]);
-        PORTB |= (1 << IO_SS_PIN); // Deselect
-    }
+    
+
+
+    // for (uint8_t i = 0; i < sizeof(BYTES); i++){
+    //     spi_master_select_slave(IO_SS_PIN);
+    //     spi_master_transmit_byte(BYTES[i]);
+    //     PORTB |= (1 << IO_SS_PIN); // Deselect
+    // }
 
     while (1){
         // oled_print_char('A');

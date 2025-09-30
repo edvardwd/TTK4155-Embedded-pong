@@ -3,13 +3,19 @@
 
 
 
-void oled_write_cmd(char cmd){
-    spi_master_select_slave(DISP_SS_PIN); // Select oled
-    PORTB &= ~(1 << DATA_N_C); // Trigger command mode
-    spi_master_transmit_byte(cmd); // Transmit the command
-    PORTB |= (1 << DISP_SS_PIN); // Turn off after transmit
-}
+// void oled_write_cmd(char cmd){
+//     spi_master_select_slave(DISP_SS_PIN); // Select oled
+//     PORTB &= ~(1 << DATA_N_C); // Trigger command mode
+//     spi_master_transmit_byte(cmd); // Transmit the command
+//     PORTB |= (1 << DISP_SS_PIN); // Turn off after transmit
+// }
 
+void oled_write_cmd(uint8_t cmd) {
+    PORTB &= ~(1 << DATA_N_C);           // Sett kommando-modus først (D/C = 0)
+    spi_master_select_slave(DISP_SS_PIN); // CS lav
+    spi_master_transmit_byte(cmd);        // Send kommando
+    PORTB |= (1 << DISP_SS_PIN);          // CS høy (deselect)
+}
 
 void oled_write_byte(char c){
     spi_master_select_slave(DISP_SS_PIN);
