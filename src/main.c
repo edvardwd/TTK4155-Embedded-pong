@@ -2,6 +2,8 @@
 #include "drivers/xmem.h"
 #include "drivers/adc.h"
 #include "drivers/joystick.h"
+#include "drivers/oled.h"
+#include "drivers/spi.h"
 #include "avr/delay.h"
 
 void test_receive_transmit() {
@@ -65,10 +67,13 @@ int main() {
     adc_init();
     volatile pos_t joystick;
     volatile pos_t slider;
+
+    spi_master_init();
+    oled_init();
     while (1){
         update_pos(&joystick, &slider);
-        printf("X: %d Y: %d \nX: %d Y: %d\n", joystick.x, joystick.y, slider.x, slider.y);
-        printf("################################\n");
+        // printf("X: %d Y: %d \nX: %d Y: %d\n", joystick.x, joystick.y, slider.x, slider.y);
+        // printf("################################\n");
     }
     return 0;
 }
