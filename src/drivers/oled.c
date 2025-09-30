@@ -7,6 +7,7 @@ void oled_write_cmd(char cmd){
     spi_master_select_slave(DISP_SS_PIN); // Select oled
     PORTB &= ~(1 << DATA_N_C); // Trigger command mode
     spi_master_transmit_byte(cmd); // Transmit the command
+    PORTB |= (1 << DISP_SS_PIN); // Turn off after transmit
 }
 
 
@@ -14,6 +15,7 @@ void oled_write_byte(char c){
     spi_master_select_slave(DISP_SS_PIN);
     PORTB |= (1 << DATA_N_C); // Trigger data mode
     spi_master_transmit_byte(c);
+    PORTB |= (1 << DISP_SS_PIN); // Turn off after transmit
 }
 
 
@@ -30,7 +32,7 @@ void oled_init(){
     oled_write_cmd(0x81); // Contrast control
     oled_write_cmd(0xff);
     oled_write_cmd(0xd9); // Set pre-charge period
-    oled_write_cmd(0x1f);
+    oled_write_cmd(0xf1);
     oled_write_cmd(0x20); // Set Memory Addressing Mode
     oled_write_cmd(0x02);
     oled_write_cmd(0xdb); // VCOM deselect level mode
@@ -42,8 +44,15 @@ void oled_init(){
     oled_write_cmd(0xaf); // Display on
 }
 
+void oled_init_minimal(){
+    oled_write_cmd(0xa1);
+    oled_write_cmd(0xc8);
+    oled_write_cmd(0xaf);
+}
+
 void oled_goto_line(uint8_t line){
-    int page_num = 0xB0 | (line / 8); //Pages range from row n -> n+7.
+    // int page_num = 0xB0 | (line / 7); //Pages range from row n -> n+7.
+    int page_num = 0xB0 | (line & 0b111);
     oled_write_cmd(page_num);
 }
 
@@ -75,13 +84,22 @@ void oled_print_char(char c){
     const unsigned char* SELECTED_FONT = font5;
     uint8_t FONT_WIDTH = 5;
 
+    uint8_t line = 0;
+    uint8_t col = 0;
+
     if (c < 32 || c > 126) c = '?'; // Ensure printable ASCII
 
     const unsigned char* printable = SELECTED_FONT[c - 32];
     for (uint8_t i = 0; i < FONT_WIDTH; i++) {
-        oled_write_byte(printable[i]);
+        oled_goto_line(line);
+        oled_goto_column(col);
+
+        char byte = pgm_read_byte(&printable[i]);
+        oled_write_byte(byte);
+        line++;
+        col++;
     }
-    oled_write_byte(' '); // Add spacing between chars
+    // oled_write_byte(' '); // Add spacing between chars
 }
 
 

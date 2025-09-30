@@ -18,7 +18,8 @@ void spi_master_transmit_byte(char data){
 }
 
 
-void spi_master_transmit_bytes(char* data, uint16_t length){
+void 
+spi_master_transmit_bytes(char* data, uint16_t length){
     // Transmit multiple bytes
     for (uint16_t i = 0; i < length; i++){
         spi_master_transmit_byte(data[i]);

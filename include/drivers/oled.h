@@ -8,6 +8,7 @@
 
 
 void oled_init();
+void oled_init_minimal();
 void oled_reset();
 void oled_home();
 

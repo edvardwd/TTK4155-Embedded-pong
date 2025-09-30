@@ -69,10 +69,30 @@ int main() {
     volatile pos_t slider;
 
     spi_master_init();
-    oled_init();
-    oled_print("Hei, Einar");
+    oled_init_minimal();
+    // oled_write_cmd(0xa5); // Entire display ON
+
+    char* STRING = "abcdefghijklmnopqrstuvwxyz";
+
+
+    // oled_write_cmd(0x05);
+
+    // Trigger LEDs
+    spi_master_select_slave(IO_SS_PIN);
+    char* BYTES[] = {0x05, 0, 1, 1, 1, 2, 1, 3, 1, 4, 1, 5, 1};
+    spi_master_transmit_bytes(BYTES, sizeof(BYTES));
+
+    for (uint8_t i = 0; i < sizeof(BYTES); i++){
+        spi_master_select_slave(IO_SS_PIN);
+        spi_master_transmit_byte(BYTES[i]);
+        PORTB |= (1 << IO_SS_PIN); // Deselect
+    }
+
     while (1){
-        update_pos(&joystick, &slider);
+        // oled_print_char('A');
+        // spi_master_transmit_bytes(STRING, 26);
+        // _delay_ms(2000);
+        // update_pos(&joystick, &slider);  
         // printf("X: %d Y: %d \nX: %d Y: %d\n", joystick.x, joystick.y, slider.x, slider.y);
         // printf("################################\n");
     }
