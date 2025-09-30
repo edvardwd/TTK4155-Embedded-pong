@@ -19,12 +19,11 @@
 
 #define DDR_SPI DDRB
 
+#define DATA_N_C PB1
+#define RND_SS PB2
+
 void spi_master_init();
-void spi_master_transmit();
-
-void spi_slave_init();
-char spi_slave_receive();
-
+void spi_master_transmit(char data);
 
 ///////////////////////////////////////////////////////////////////
 #endif

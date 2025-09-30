@@ -1,5 +1,5 @@
-#include "joystick.h"
-#include "adc.h"
+#include "drivers/joystick.h"
+#include "drivers/adc.h"
 #include "avr/io.h"
 #include "avr/delay.h"
 

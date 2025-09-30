@@ -1,6 +1,6 @@
-#include "xmem.h"
+#include "drivers/xmem.h"
 #include "avr/io.h"
-#include "uart.h"
+#include "drivers/uart.h"
 
 void xmem_init() {
     MCUCR |= (1 << SRE); // Enable XMEM

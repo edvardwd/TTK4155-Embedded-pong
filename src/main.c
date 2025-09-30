@@ -1,7 +1,7 @@
-#include "uart.h"
-#include "xmem.h"
-#include "adc.h"
-#include "joystick.h"
+#include "drivers/uart.h"
+#include "drivers/xmem.h"
+#include "drivers/adc.h"
+#include "drivers/joystick.h"
 #include "avr/delay.h"
 
 void test_receive_transmit() {
