@@ -1,5 +1,5 @@
 #include "drivers/oled.h"
-
+#include "fonts.h"
 
 
 
@@ -9,6 +9,12 @@ void oled_write_cmd(char cmd){
     spi_master_transmit_byte(cmd); // Transmit the command
 }
 
+
+void oled_write_byte(char c){
+    spi_master_select_slave(DISP_SS_PIN);
+    PORTB |= (1 << DATA_N_C); // Trigger data mode
+    spi_master_transmit_byte(c);
+}
 
 
 void oled_init(){
@@ -59,13 +65,29 @@ void oled_goto_column(uint8_t column){
 void oled_reset();
 void oled_home();
 
-void oled_goto_line(uint8_t line);
 void oled_clear_line(uint8_t line);
 void oled_pos(uint8_t row, uint8_t col);
 
 
+void oled_print_char(char c){
+    // Choose default font
+    // TODO: make configurable
+    const unsigned char* SELECTED_FONT = font5;
+    uint8_t FONT_WIDTH = 5;
+
+    if (c < 32 || c > 126) c = '?'; // Ensure printable ASCII
+
+    const unsigned char* printable = SELECTED_FONT[c - 32];
+    for (uint8_t i = 0; i < FONT_WIDTH; i++) {
+        oled_write_byte(printable[i]);
+    }
+    oled_write_byte(' '); // Add spacing between chars
+}
 
 
-
-void oled_print(char* msg);
+void oled_print(const char* msg){
+    while (*msg) {
+        oled_print_char(*msg++);
+    }
+}
 void oled_set_brightness(uint8_t level);

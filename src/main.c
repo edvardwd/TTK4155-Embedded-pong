@@ -70,6 +70,7 @@ int main() {
 
     spi_master_init();
     oled_init();
+    oled_print("Hei, Einar");
     while (1){
         update_pos(&joystick, &slider);
         // printf("X: %d Y: %d \nX: %d Y: %d\n", joystick.x, joystick.y, slider.x, slider.y);

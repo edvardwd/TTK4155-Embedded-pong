@@ -16,9 +16,10 @@ void oled_goto_column(uint8_t column);
 void oled_clear_line(uint8_t line);
 void oled_pos(uint8_t row, uint8_t col);
 void oled_write_cmd(char data);
-void oled_print(char* msg);
-void oled_set_brightness(uint8_t level);
 
+void oled_print(const char* msg);
+void oled_set_brightness(uint8_t level);
+void oled_print_char(char c);
 
 
 
