@@ -2,6 +2,7 @@
 #include "drivers/adc.h"
 #include "avr/io.h"
 #include "avr/delay.h"
+#include <cstdint>
 
 
 // void pos_calibrate() {
@@ -45,5 +46,50 @@ void update_pos(pos_t* joystick, pos_t* slider) {
     
 }
 
+
+
+
+joystick_dir_t joystick_get_dir(pos_t* joystick) {
+    joystick_dir_t dir = {0, 0, 0, 0}; //Neutral
+    update_pos(joystick, NULL);
+
+    int8_t x = joystick->x; //reads x value
+    int8_t y = joystick->y; //reads y value
+
+    if (y > DEADZONE)       dir.up = 1;
+    else if (y < -DEADZONE) dir.down = 1;
+
+    if (x > DEADZONE)       dir.right = 1;
+    else if (x < -DEADZONE) dir.left = 1;
+
+    return dir;
+}
+
+
+void joystick_print_dir(joystick_dir_t dir) {
+    uint8_t printed = 0;
+
+    if (dir.up) {
+        printf("UP ");
+        printed = 1;
+    }
+    if (dir.down) {
+        printf("DOWN ");
+        printed = 1;
+    }
+    if (dir.left) {
+        printf("LEFT ");
+        printed = 1;
+    }
+    if (dir.right) {
+        printf("RIGHT ");
+        printed = 1;
+    }
+    if (!printed) {
+        printf("CENTER");
+    }
+
+    printf("\n");
+}
 
 
