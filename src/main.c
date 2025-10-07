@@ -4,6 +4,7 @@
 #include "drivers/joystick.h"
 #include "drivers/oled.h"
 #include "drivers/spi.h"
+#include "drivers/oled_menu.h"
 #include "avr/delay.h"
 
 void test_receive_transmit() {
@@ -71,30 +72,15 @@ int main() {
     spi_master_init();
     oled_init();
     _delay_ms(200);
-    //oled_init_minimal();
-    //oled_write_cmd(0xa5); // Entire display ON
 
-    //char* STRING = "abcdefghijklmnopqrstuvwxyz";
+    menu_t* menu = init_menu();
 
-    // oled_write_cmd(0x05);
+    for (uint8_t i = 0; i < 8; i++)
+    {
+        menu_t* child = (menu->sub_menus[i]);
 
-    // Trigger LEDs
-    // spi_master_select_slave(IO_SS_PIN);
-    // spi_master_transmit_byte(0x05);
-    // _delay_us(40);
-    // spi_master_transmit_byte(2);
-    // _delay_us(1);
-    // spi_master_transmit_byte(1);
-    // PORTB |= (1 << IO_SS_PIN); // Deselect
-
-    // 
-    oled_write_byte(5);
-    oled_print(0, 0, "Hallelujah!");
-    oled_print(9, 0, "Det funker!");
-
-    
-
-
+        oled_print(i*8, 0, child->title);
+    }
     // for (uint8_t i = 0; i < sizeof(BYTES); i++){
     //     spi_master_select_slave(IO_SS_PIN);
     //     spi_master_transmit_byte(BYTES[i]);
@@ -102,12 +88,9 @@ int main() {
     // }
 
     while (1){
-        // oled_print_char('A');
-        // spi_master_transmit_bytes(STRING, 26);
-        // _delay_ms(2000);
-        // update_pos(&joystick, &slider);  
-        // printf("X: %d Y: %d \nX: %d Y: %d\n", joystick.x, joystick.y, slider.x, slider.y);
-        // printf("################################\n");
+        navigate_menu(menu);
+
+        _delay_ms(10);
     }
     return 0;
 }

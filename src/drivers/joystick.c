@@ -26,7 +26,9 @@ int8_t clip_value(int8_t val, int8_t min, int8_t max){
 
 
 
-void update_pos(pos_t* joystick, pos_t* slider) {
+pos_t get_pos() {
+    pos_t pos;
+
     // Sample values
     *ADC = 0; // sets WR high and samples values
     while(!(PINB & (1 << BUSY_PIN))); // wait until conversion is done
@@ -36,28 +38,25 @@ void update_pos(pos_t* joystick, pos_t* slider) {
     volatile uint8_t raw_slider_y = adc_read();
     volatile uint8_t raw_slider_x = adc_read();
     
-    joystick->x = map_to_percent(raw_joystick_x, X_MIN, X_CENTER, X_MAX);
-    joystick->y = map_to_percent(raw_joystick_y, Y_MIN, Y_CENTER, Y_MAX);
-    slider->x = clip_value(((int16_t) raw_slider_x*100 >> 7) - 100, -100, 100); 
-    slider->y = clip_value(((int16_t) raw_slider_y*100 >> 7) - 100, -100, 100);
-    
+    pos.joystick_x = map_to_percent(raw_joystick_x, X_MIN, X_CENTER, X_MAX);
+    pos.joystick_y = map_to_percent(raw_joystick_y, Y_MIN, Y_CENTER, Y_MAX);
+    pos.slider_x = clip_value(((int16_t) raw_slider_x*100 >> 7) - 100, -100, 100); 
+    pos.slider_y = clip_value(((int16_t) raw_slider_y*100 >> 7) - 100, -100, 100);
+    return pos;
 }
 
+joystick_dir_t joystick_get_dir() {
+    pos_t pos = get_pos();
+    joystick_dir_t dir = {NEUTRAL, NEUTRAL}; //Neutral
 
+    int8_t x = pos.joystick_x; //reads x value
+    int8_t y = pos.joystick_y; //reads y value
 
+    if (y > DEADZONE)       dir.vertical_dir = UP;
+    else if (y < -DEADZONE) dir.vertical_dir = DOWN;
 
-joystick_dir_t joystick_get_dir(pos_t* joystick, pos_t* slider) {
-    joystick_dir_t dir = {0, 0, 0, 0}; //Neutral
-    update_pos(joystick, slider);
-
-    int8_t x = joystick->x; //reads x value
-    int8_t y = joystick->y; //reads y value
-
-    if (y > DEADZONE)       dir.up = 1;
-    else if (y < -DEADZONE) dir.down = 1;
-
-    if (x > DEADZONE)       dir.right = 1;
-    else if (x < -DEADZONE) dir.left = 1;
+    if (x > DEADZONE)       dir.horizontal_dir = RIGHT;
+    else if (x < -DEADZONE) dir.horizontal_dir = LEFT;
 
     return dir;
 }
@@ -66,19 +65,19 @@ joystick_dir_t joystick_get_dir(pos_t* joystick, pos_t* slider) {
 void joystick_print_dir(joystick_dir_t dir) {
     uint8_t printed = 0;
     
-    if (dir.up) {
+    if (dir.vertical_dir == UP) {
         printf("UP ");
         printed = 1;
     }
-    if (dir.down) {
+    if (dir.vertical_dir == DOWN) {
         printf("DOWN ");
         printed = 1;
     }
-    if (dir.left) {
+    if (dir.horizontal_dir == LEFT) {
         printf("LEFT ");
         printed = 1;
     }
-    if (dir.right) {
+    if (dir.horizontal_dir == RIGHT) {
         printf("RIGHT ");
         printed = 1;
     }

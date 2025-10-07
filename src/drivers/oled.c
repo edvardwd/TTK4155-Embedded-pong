@@ -122,11 +122,24 @@ void oled_clear_line(uint8_t line){ //Assume func wants to clear a page.
         //Column pointer auto-increments +1 per write in page-adr-mode. 
     }
 }
-void oled_fill_line(uint8_t line){ //Assume func wants to clear a page.
+
+
+void oled_fill_line(uint8_t line){ //Assume func wants to fill a page.
     oled_pos(line, 0);
     for (uint8_t i = 0; i < N_COLS; i++) {
         oled_write_byte(127); //Sets all pixels in column on
         //Column pointer auto-increments +1 per write in page-adr-mode. 
+    }
+}
+
+void oled_clear_column(uint8_t line, uint8_t col){
+    oled_pos(line, col);
+    oled_write_byte(0); 
+}
+
+void oled_clear_disp(void){
+    for (uint8_t i = 0; i < 64; i += 8){
+        oled_clear_line(i);
     }
 }
 
@@ -145,14 +158,13 @@ void oled_home();
 void oled_print_char(uint8_t line, uint8_t col, char c){
     // Choose default font
     // TODO: make configurable
-    uint8_t FONT_WIDTH = 5;
 
     if (c < 32 || c > 126) c = '?'; // Ensure printable ASCII
 
     //const unsigned char* printable = SELECTED_FONT[c - 32];
     oled_pos(line, col);
     for (uint8_t i = 0; i < FONT_WIDTH; i++) {
-        char byte = pgm_read_byte(&font5[c-32][i]);
+        char byte = pgm_read_byte(&SELECTED_FONT[c-32][i]);
         oled_write_byte(byte);
     }
 }
@@ -161,7 +173,7 @@ void oled_print_char(uint8_t line, uint8_t col, char c){
 void oled_print(uint8_t line, uint8_t col, const char* msg){
     while (*msg) {
         oled_print_char(line, col, *msg++);
-        col += 6; // Font width spacing between letters
+        col += FONT_WIDTH + 1; // Font width spacing between letters
     }
 }
 void oled_set_brightness(uint8_t level); 
