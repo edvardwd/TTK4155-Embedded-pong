@@ -13,15 +13,19 @@
 void oled_write_cmd(uint8_t cmd) {
     PORTB &= ~(1 << DATA_N_C);           // Set command-mode first (D/C = 0)
     spi_master_select_slave(DISP_SS_PIN); // CS low
+    _delay_us(1);
     spi_master_transmit_byte(cmd);        // Send command
+    _delay_us(1);
     PORTB |= (1 << DISP_SS_PIN);          // CS high (deselect)
 }
 
-void oled_write_byte(char c){
+void oled_write_byte(uint8_t c){
     PORTB |= (1 << DATA_N_C); // Trigger data mode
     spi_master_select_slave(DISP_SS_PIN);
+    _delay_us(1);
     spi_master_transmit_byte(c);
-    PORTB |= (1 << DISP_SS_PIN); // Turn off after transmit
+    _delay_us(1);
+    PORTB |= (1 << DISP_SS_PIN); // Deselect after transmit
 }
 
 
@@ -48,10 +52,15 @@ void oled_init(){
     oled_write_cmd(0xa4); // Out follows RAM content
     oled_write_cmd(0xa6); // Set normal display
     oled_write_cmd(0xaf); // Display on
+
+    // Set screen all black initially
+    for (uint8_t i = 0; i < 64; i += 8){
+        oled_clear_line(i);
+    }
 }
 
 void oled_init_minimal(){
-    //oled_write_cmd(0xae); // Display off
+    oled_write_cmd(0xae); // Display off
     oled_write_cmd(0xA1);
     oled_write_cmd(0xC8);
     oled_write_cmd(0x20);   // set memory addressing mode
@@ -60,7 +69,7 @@ void oled_init_minimal(){
 }
 
 void oled_goto_line(uint8_t line){
-    int page_num = 0xB0 | (line >> 3);
+    uint8_t page_num = 0xB0 | (line >> 3);
     oled_write_cmd(page_num);
 }
 
@@ -91,6 +100,13 @@ void oled_clear_line(uint8_t line){ //Assume func wants to clear a page.
         //Column pointer auto-increments +1 per write in page-adr-mode. 
     }
 }
+void oled_fill_line(uint8_t line){ //Assume func wants to clear a page.
+    oled_pos(line, 0);
+    for (uint8_t i = 0; i < N_COLS; i++) {
+        oled_write_byte(127); //Sets all pixels in column on
+        //Column pointer auto-increments +1 per write in page-adr-mode. 
+    }
+}
 
 
 
@@ -107,21 +123,17 @@ void oled_home();
 void oled_print_char(char c){
     // Choose default font
     // TODO: make configurable
-    const unsigned char* SELECTED_FONT = font5;
     uint8_t FONT_WIDTH = 5;
-
     uint8_t line = 0;
     uint8_t col = 0;
 
     if (c < 32 || c > 126) c = '?'; // Ensure printable ASCII
 
-    const unsigned char* printable = SELECTED_FONT[c - 32];
+    //const unsigned char* printable = SELECTED_FONT[c - 32];
+    oled_pos(line, col);
     for (uint8_t i = 0; i < FONT_WIDTH; i++) {
-        oled_pos(line, col);
-        char byte = pgm_read_byte(&printable[i]);
+        char byte = pgm_read_byte(&font5[c-32][i]);
         oled_write_byte(byte);
-        line++;
-        col++;
     }
     // oled_write_byte(' '); // Add spacing between chars
 }

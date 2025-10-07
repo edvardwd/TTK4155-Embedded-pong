@@ -5,7 +5,8 @@
 #include "stdint.h"
 #include "drivers/spi.h"
 #include "avr/pgmspace.h"
-#define N_COLS 127
+#include "util/delay.h"
+#define N_COLS 128
 
 
 void oled_init();
@@ -16,6 +17,7 @@ void oled_home();
 void oled_goto_line(uint8_t line);
 void oled_goto_column(uint8_t column);
 void oled_clear_line(uint8_t line);
+void oled_fill_line(uint8_t line);
 void oled_pos(uint8_t row, uint8_t col);
 void oled_write_cmd(uint8_t data);
 

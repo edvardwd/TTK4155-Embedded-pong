@@ -51,7 +51,7 @@ void test_adc() {
 
 
     // printf("X-pos: %4d, Y-pos: %4d\n", x, y);
-    for (uint8_t i; i < 4; i++){
+    for (uint8_t i = 0; i < 4; i++){
         volatile uint8_t val = ADC[i];
         printf("Channel: %02X\tValue: %4d\n", i, val);
     }
@@ -70,21 +70,28 @@ int main() {
 
     spi_master_init();
     oled_init();
-    oled_write_cmd(0xa5); // Entire display ON
+    _delay_ms(200);
+    //oled_init_minimal();
+    //oled_write_cmd(0xa5); // Entire display ON
 
     //char* STRING = "abcdefghijklmnopqrstuvwxyz";
 
 
+    oled_fill_line(25);
     // oled_write_cmd(0x05);
 
     // Trigger LEDs
-    spi_master_select_slave(IO_SS_PIN);
-    spi_master_transmit_byte(0x05);
-    _delay_us(40);
-    spi_master_transmit_byte(2);
-    _delay_us(1);
-    spi_master_transmit_byte(2);
-    PORTB |= (1 << IO_SS_PIN); // Deselect
+    // spi_master_select_slave(IO_SS_PIN);
+    // spi_master_transmit_byte(0x05);
+    // _delay_us(40);
+    // spi_master_transmit_byte(2);
+    // _delay_us(1);
+    // spi_master_transmit_byte(1);
+    // PORTB |= (1 << IO_SS_PIN); // Deselect
+
+    // 
+    
+    oled_print("Hallelujah!");
 
     
 

@@ -6,6 +6,7 @@ void spi_master_init(){
     DDR_SPI = (1 << MOSI_PIN) | (1 << SCK_PIN) | (1 << IO_SS_PIN) | 
             (1 << DISP_SS_PIN) | (1 << RND_SS) | (1 << DATA_N_C);
     
+    PORTB |= (1 << IO_SS_PIN) | (1 << DISP_SS_PIN) | (1 << RND_SS); // Deselect all slaves initially
     // Enable SPI, Master, set clock rate fck / 16
     SPCR = (1 << SPE) | (1 << MSTR) | (1 << SPR0);
 }
@@ -14,17 +15,19 @@ void spi_master_init(){
 void spi_master_transmit_byte(char data){
     SPDR = data; // Start transmission
     while (!(SPSR & (1 << SPIF))); // Wait until it completes
+    // volatile uint8_t dummy = SPSR; 
+    // dummy = SPDR;
 }
 
 
-void 
-spi_master_transmit_bytes(char* data, uint16_t length){
+void spi_master_transmit_bytes(char* data, uint16_t length){
     // Transmit multiple bytes
     for (uint16_t i = 0; i < length; i++){
         spi_master_transmit_byte(data[i]);
     }
 }
 char spi_master_read_byte() {
+    SPDR = 0x00; // Send dummy byte
     while (!(SPSR & (1 << SPIF))); // Wait for reception complete
     return SPDR;
 }
@@ -33,7 +36,6 @@ char spi_master_read_byte() {
 void spi_master_read_bytes(char* read_buffer, uint16_t length){
     // Read multiple bytes
     for (uint16_t i = 0; i < length; i++){
-        SPDR = 0x43; // Send dummy byte
         read_buffer[i] = spi_master_read_byte();
     }
     // read_buffer is now filled
