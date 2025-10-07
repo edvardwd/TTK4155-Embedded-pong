@@ -8,7 +8,6 @@ void spi_master_init(){
     
     // Enable SPI, Master, set clock rate fck / 16
     SPCR = (1 << SPE) | (1 << MSTR) | (1 << SPR0);
-
 }
 
 
@@ -44,7 +43,7 @@ void spi_master_read_bytes(char* read_buffer, uint16_t length){
 void spi_master_select_slave(uint8_t slave_id){
     // Initially, turn of all slaves by driving them high
     PORTB |= (1 << IO_SS_PIN) | (1 << DISP_SS_PIN) | (1 << RND_SS);
-    
+
     // Turn on selected slave by driving it low
     PORTB &= ~(1 << slave_id);
 }

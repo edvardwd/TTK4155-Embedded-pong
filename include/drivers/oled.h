@@ -5,6 +5,7 @@
 #include "stdint.h"
 #include "drivers/spi.h"
 #include "avr/pgmspace.h"
+#define N_COLS 127
 
 
 void oled_init();

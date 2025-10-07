@@ -11,15 +11,15 @@
 // }
 
 void oled_write_cmd(uint8_t cmd) {
-    PORTB &= ~(1 << DATA_N_C);           // Sett kommando-modus først (D/C = 0)
-    spi_master_select_slave(DISP_SS_PIN); // CS lav
-    spi_master_transmit_byte(cmd);        // Send kommando
-    PORTB |= (1 << DISP_SS_PIN);          // CS høy (deselect)
+    PORTB &= ~(1 << DATA_N_C);           // Set command-mode first (D/C = 0)
+    spi_master_select_slave(DISP_SS_PIN); // CS low
+    spi_master_transmit_byte(cmd);        // Send command
+    PORTB |= (1 << DISP_SS_PIN);          // CS high (deselect)
 }
 
 void oled_write_byte(char c){
-    spi_master_select_slave(DISP_SS_PIN);
     PORTB |= (1 << DATA_N_C); // Trigger data mode
+    spi_master_select_slave(DISP_SS_PIN);
     spi_master_transmit_byte(c);
     PORTB |= (1 << DISP_SS_PIN); // Turn off after transmit
 }
@@ -51,14 +51,16 @@ void oled_init(){
 }
 
 void oled_init_minimal(){
-    oled_write_cmd(0xa1);
-    oled_write_cmd(0xc8);
-    oled_write_cmd(0xaf);
+    //oled_write_cmd(0xae); // Display off
+    oled_write_cmd(0xA1);
+    oled_write_cmd(0xC8);
+    oled_write_cmd(0x20);   // set memory addressing mode
+    oled_write_cmd(0x02);   // page addressing mode
+    oled_write_cmd(0xAF);   //Display on
 }
 
 void oled_goto_line(uint8_t line){
-    // int page_num = 0xB0 | (line / 7); //Pages range from row n -> n+7.
-    int page_num = 0xB0 | (line & 0b111);
+    int page_num = 0xB0 | (line >> 3);
     oled_write_cmd(page_num);
 }
 
@@ -76,12 +78,30 @@ void oled_goto_column(uint8_t column){
     */
 }
 
+void oled_pos(uint8_t row, uint8_t col){
+    oled_goto_line(row);
+    oled_goto_column(col);
+}
 
-void oled_reset();
+void oled_clear_line(uint8_t line){ //Assume func wants to clear a page.
+    oled_pos(line, 0);
+    for (uint8_t i = 0; i < N_COLS; i++)
+    {
+        oled_write_byte(0); //Sets all pixels in column black
+        //Column pointer auto-increments +1 per write in page-adr-mode. 
+    }
+}
+
+
+
+void oled_reset() {
+    oled_write_cmd(0xAE);
+    oled_init_minimal();
+}
+
+
 void oled_home();
 
-void oled_clear_line(uint8_t line);
-void oled_pos(uint8_t row, uint8_t col);
 
 
 void oled_print_char(char c){
@@ -97,9 +117,7 @@ void oled_print_char(char c){
 
     const unsigned char* printable = SELECTED_FONT[c - 32];
     for (uint8_t i = 0; i < FONT_WIDTH; i++) {
-        oled_goto_line(line);
-        oled_goto_column(col);
-
+        oled_pos(line, col);
         char byte = pgm_read_byte(&printable[i]);
         oled_write_byte(byte);
         line++;
@@ -114,4 +132,4 @@ void oled_print(const char* msg){
         oled_print_char(*msg++);
     }
 }
-void oled_set_brightness(uint8_t level);
+void oled_set_brightness(uint8_t level); 
