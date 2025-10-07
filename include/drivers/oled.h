@@ -6,6 +6,8 @@
 #include "drivers/spi.h"
 #include "avr/pgmspace.h"
 #include "util/delay.h"
+#include "fonts.h"
+
 #define N_COLS 128
 
 

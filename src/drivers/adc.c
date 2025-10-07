@@ -1,6 +1,4 @@
 #include "drivers/adc.h"
-#include <avr/io.h>
-
 
 
 void adc_init(){

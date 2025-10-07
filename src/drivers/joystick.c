@@ -1,8 +1,5 @@
 #include "drivers/joystick.h"
-#include "drivers/adc.h"
-#include "avr/io.h"
-#include "avr/delay.h"
-#include <cstdint>
+
 
 
 // void pos_calibrate() {
@@ -49,9 +46,9 @@ void update_pos(pos_t* joystick, pos_t* slider) {
 
 
 
-joystick_dir_t joystick_get_dir(pos_t* joystick) {
+joystick_dir_t joystick_get_dir(pos_t* joystick, pos_t* slider) {
     joystick_dir_t dir = {0, 0, 0, 0}; //Neutral
-    update_pos(joystick, NULL);
+    update_pos(joystick, slider);
 
     int8_t x = joystick->x; //reads x value
     int8_t y = joystick->y; //reads y value

@@ -2,6 +2,10 @@
 #define JOYSTICK_H
 /////////////////////////
 #include "stdint.h"
+#include "drivers/adc.h"
+#include "avr/io.h"
+#include "avr/delay.h"
+
 #define X_CENTER 162
 #define X_MIN 69
 #define X_MAX 251
