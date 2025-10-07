@@ -2,12 +2,34 @@
 #include "fonts.h"
 
 
+// static struct{
+//     const unsigned char* font;
+//     uint8_t width;
+// } SELECTED_FONT = {
+//     .font = font5, // Normal sized font by default
+//     .width = 5
+// };
 
-// void oled_write_cmd(char cmd){
-//     spi_master_select_slave(DISP_SS_PIN); // Select oled
-//     PORTB &= ~(1 << DATA_N_C); // Trigger command mode
-//     spi_master_transmit_byte(cmd); // Transmit the command
-//     PORTB |= (1 << DISP_SS_PIN); // Turn off after transmit
+
+// void oled_set_font(oled_font_t font){
+// switch (font){
+//     case small:
+//         SELECTED_FONT.font = font4;
+//         SELECTED_FONT.width = 4;
+//         break;
+
+//     case normal:
+//         SELECTED_FONT.font = font5;
+//         SELECTED_FONT.width = 5;
+//         break;
+//     case large:
+//         SELECTED_FONT.font = font8;
+//         SELECTED_FONT.width = 8;
+//         break;
+//     default:
+//         SELECTED_FONT.font = font5;
+//         SELECTED_FONT.width = 5;
+// }
 // }
 
 void oled_write_cmd(uint8_t cmd) {
@@ -120,12 +142,10 @@ void oled_home();
 
 
 
-void oled_print_char(char c){
+void oled_print_char(uint8_t line, uint8_t col, char c){
     // Choose default font
     // TODO: make configurable
     uint8_t FONT_WIDTH = 5;
-    uint8_t line = 0;
-    uint8_t col = 0;
 
     if (c < 32 || c > 126) c = '?'; // Ensure printable ASCII
 
@@ -135,13 +155,13 @@ void oled_print_char(char c){
         char byte = pgm_read_byte(&font5[c-32][i]);
         oled_write_byte(byte);
     }
-    // oled_write_byte(' '); // Add spacing between chars
 }
 
 
-void oled_print(const char* msg){
+void oled_print(uint8_t line, uint8_t col, const char* msg){
     while (*msg) {
-        oled_print_char(*msg++);
+        oled_print_char(line, col, *msg++);
+        col += 6; // Font width spacing between letters
     }
 }
 void oled_set_brightness(uint8_t level); 

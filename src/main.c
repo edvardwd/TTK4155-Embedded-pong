@@ -76,8 +76,6 @@ int main() {
 
     //char* STRING = "abcdefghijklmnopqrstuvwxyz";
 
-
-    oled_fill_line(25);
     // oled_write_cmd(0x05);
 
     // Trigger LEDs
@@ -90,8 +88,9 @@ int main() {
     // PORTB |= (1 << IO_SS_PIN); // Deselect
 
     // 
-    
-    oled_print("Hallelujah!");
+    oled_write_byte(5);
+    oled_print(0, 0, "Hallelujah!");
+    oled_print(9, 0, "Det funker!");
 
     
 
