@@ -9,6 +9,7 @@
 #define Y_CENTER 162
 #define Y_MIN 67
 #define Y_MAX 252
+#define DEADZONE 20
 
 
 
@@ -17,18 +18,20 @@ typedef struct {
     int8_t y;
 } pos_t;
 
-// typedef enum {
-//     NEUTRAL,
-//     UP,
-//     DOWN,
-//     LEFT,
-//     RIGHT
-// } joystick_dir_t;
+typedef struct {
+    uint8_t up;
+    uint8_t down;
+    uint8_t left;
+    uint8_t right;
+} joystick_dir_t;
 
 
 void update_pos(pos_t* joystick, pos_t* slider);
 int8_t map_to_percent(uint8_t raw, uint8_t min, uint8_t center, uint8_t max);
 int8_t clip_value(int8_t val, int8_t min, int8_t max);
 // joystick_dir_t joystick_get_dir();
+
+joystick_dir_t joystick_get_dir(pos_t* joystick);
+void joystick_print_dir(joystick_dir_t dir);
 
 #endif

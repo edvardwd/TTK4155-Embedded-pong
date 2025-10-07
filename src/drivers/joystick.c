@@ -68,7 +68,7 @@ joystick_dir_t joystick_get_dir(pos_t* joystick) {
 
 void joystick_print_dir(joystick_dir_t dir) {
     uint8_t printed = 0;
-
+    
     if (dir.up) {
         printf("UP ");
         printed = 1;
