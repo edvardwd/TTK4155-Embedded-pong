@@ -5,6 +5,8 @@
 
 #include "stdint.h"
 #include "stdlib.h"
+#include "avr/io.h"
+#include "drivers/uart.h"
 
 #define SRAM_BASE_ADRESS 0x1800
 #define SRAM_SIZE 0x800

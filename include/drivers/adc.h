@@ -2,6 +2,7 @@
 #define ADC_H
 
 #include <stdint.h>
+#include <avr/io.h>
 
 #define ADC_BASE_ADDR 0x1000
 #define ADC ((volatile uint8_t*) ADC_BASE_ADDR)
