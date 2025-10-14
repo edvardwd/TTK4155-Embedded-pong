@@ -21,6 +21,15 @@ void add_menu_elem_w_func(menu_t *menu, const char *title, menu_func_t action, m
     }
 }
 
+void game1_action(){
+    oled_clear_disp();
+    oled_line(20, 20, 40, 20);
+}
+
+void game3_action(){
+    oled_clear_disp();
+    oled_circle(40, 40, 10);
+}
 
 
 menu_t* init_menu(void){
@@ -51,13 +60,13 @@ menu_t* init_menu(void){
 
     // Init barna til root
     m_highscore.title = "High score";  m_highscore.action = NULL; m_highscore.parent = &root;
-    m_game1.title     = "Game 1";      m_game1.action     = NULL; m_game1.parent     = &root;
+    m_game1.title     = "Draw line";      m_game1.action     = &game1_action; m_game1.parent     = &root;
     m_game2.title     = "Game 2";      m_game2.action     = NULL; m_game2.parent     = &root;
-    m_game3.title     = "Game 3";      m_game3.action     = NULL; m_game3.parent     = &root;
+    m_game3.title     = "Draw circle";      m_game3.action     = &game3_action; m_game3.parent     = &root;
     m_game4.title     = "Game 4";      m_game4.action     = NULL; m_game4.parent     = &root;
     m_game5.title     = "Game 5";      m_game5.action     = NULL; m_game5.parent     = &root;
     m_game6.title     = "Game 6";      m_game6.action     = NULL; m_game6.parent     = &root;
-    m_turnoff.title   = "Turn off";    m_turnoff.action   = NULL; m_turnoff.parent   = &root;
+    m_turnoff.title   = "Game 7";    m_turnoff.action   = NULL; m_turnoff.parent   = &root;
 
     // Legg inn i root
     root.sub_menus[root.n_elems++] = &m_highscore;
@@ -99,7 +108,7 @@ void navigate_menu(menu_t *m){
         oled_clear_disp();
         // Check if action button
         if (selected->action != NULL){
-            *selected->action;
+            selected->action();
         } 
         else{
             m = selected;

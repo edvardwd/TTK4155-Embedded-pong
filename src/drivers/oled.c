@@ -88,6 +88,11 @@ void oled_init_minimal(){
     oled_write_cmd(0x20);   // set memory addressing mode
     oled_write_cmd(0x02);   // page addressing mode
     oled_write_cmd(0xAF);   //Display on
+
+    // Set screen all black initially
+    for (uint8_t i = 0; i < 64; i += 8){
+        oled_clear_line(i);
+    }
 }
 
 void oled_goto_line(uint8_t line){
@@ -177,3 +182,46 @@ void oled_print(uint8_t line, uint8_t col, const char* msg){
     }
 }
 void oled_set_brightness(uint8_t level); 
+
+void oled_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1) {
+    // Draws a line on the display from (x0, y0) to (x1, y1)
+    if (x0 == x1){
+        // Vertical line
+        for (int8_t y = y0; y <= y1; y++){
+            oled_pos(y, x0);
+            oled_write_byte(127);
+        }
+        return;
+    }
+    if (y0 == y1){
+        // Horizontal line
+        for (int8_t x = x0; x <= x1; x++){
+            oled_pos(y0, x);
+            oled_write_byte(127);
+        }
+        return;
+    }
+    // Find a funtcion on the form y = ax + b:
+    int8_t a = (y1 - y0) / (x1 - x0);
+    int8_t b = y0 - (a * x0);
+    // Draw line
+    for (int8_t x = x0; x <= x1; x++){
+        int8_t y = a * x + b;
+        oled_pos(y, x);
+        oled_write_byte(127);
+    }
+
+}
+
+
+
+void oled_circle(uint8_t x0, uint8_t y0, uint8_t r){
+    // Draws a circle with radius r and (x0, y0) in the center
+    for (float theta = 0; theta < 2*M_PI; theta += 0.1 ){
+        int8_t x = (int8_t) (x0 + r * cos(theta));
+        int8_t y  = (int8_t) (y0 + r * sin(theta));
+        oled_pos(y, x);
+        oled_write_byte(127);
+    }
+    return;
+}

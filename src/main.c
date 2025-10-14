@@ -70,7 +70,7 @@ int main() {
     volatile pos_t slider;
 
     spi_master_init();
-    oled_init();
+    oled_init_minimal();
     _delay_ms(200);
 
     menu_t* menu = init_menu();

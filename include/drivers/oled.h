@@ -42,6 +42,9 @@ void oled_print_char(uint8_t line, uint8_t col, char c);
 
 void oled_clear_disp(void);
 
+void oled_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
+void oled_circle(uint8_t x0, uint8_t y0, uint8_t r);
+
 
 
 ///////////////////////////////////////////////////////////////////
