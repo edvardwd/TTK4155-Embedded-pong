@@ -25,7 +25,7 @@ char spi_master_read_byte_with_trigger(uint8_t trigger_byte);
 void spi_master_read_bytes(char* read_buffer, uint16_t length);
 
 void spi_master_select_slave(uint8_t slave_id);
-void spi_master_deselct_slave(uint8_t slave_id)
+void spi_master_deselect_slave(uint8_t slave_id)
 
 
 ///////////////////////////////////////////////////////////////////

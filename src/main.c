@@ -5,6 +5,8 @@
 #include "drivers/oled.h"
 #include "drivers/spi.h"
 #include "drivers/oled_menu.h"
+#include "drivers/mcp2515.h"
+#include "drivers/can.h"
 #include "avr/delay.h"
 
 void test_receive_transmit() {
@@ -57,7 +59,16 @@ void test_adc() {
         printf("Channel: %02X\tValue: %4d\n", i, val);
     }
 }
-//
+
+
+void test_can(){
+    can_message test_message;
+    test_message.id = 1;
+    test_message.data_length = 3;
+    test_message.data = {'h', 'e', 'i'};
+}
+
+
 int main() {
     uart_init(UBRR);
     xmem_init();
@@ -75,6 +86,7 @@ int main() {
 
     menu_t* menu = init_menu();
 
+
     for (uint8_t i = 0; i < 8; i++)
     {
         menu_t* child = (menu->sub_menus[i]);
@@ -85,6 +97,7 @@ int main() {
     //     spi_master_select_slave(IO_SS_PIN);
     //     spi_master_transmit_byte(BYTES[i]);
     //     PORTB |= (1 << IO_SS_PIN); // Deselect
+
     // }
 
     while (1){
