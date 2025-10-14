@@ -27,11 +27,14 @@ void spi_master_transmit_bytes(char* data, uint16_t length){
     }
 }
 char spi_master_read_byte() {
-    SPDR = 0x00; // Send dummy byte
+    return spi_master_read_byte_with_trigger(0x00); // Send dummy byte
+}
+
+char spi_master_read_byte_with_trigger(uint8_t trigger_byte) {
+    SPDR = trigger_byte; // Send trigger byte
     while (!(SPSR & (1 << SPIF))); // Wait for reception complete
     return SPDR;
 }
-
 
 void spi_master_read_bytes(char* read_buffer, uint16_t length){
     // Read multiple bytes
@@ -48,4 +51,8 @@ void spi_master_select_slave(uint8_t slave_id){
 
     // Turn on selected slave by driving it low
     PORTB &= ~(1 << slave_id);
+}
+
+void spi_master_deselct_slave(uint8_t slave_id){
+    PORTB |= (1 << slave_id);
 }
