@@ -2,7 +2,7 @@
 
 
 
-uint8_t mcp2515_read(uint8_t address) {
+uint8_t mcp2515_read(uint8_t address){
     spi_master_select_slave(RND_SS);
 
     spi_master_transmit_byte(MCP_READ);
@@ -23,6 +23,7 @@ void mcp2515_write(uint8_t address, uint8_t data){
 }
 void mcp2515_init(){
     mcp2515_reset();
+    mcp2515_bit_modify(MCP_CANINTF, 0xff, 0x00); // clear all old flags
     _delay_ms(100);
 
     uint8_t value = mcp2515_read(MCP_CANSTAT);
@@ -46,17 +47,22 @@ void mcp2515_init(){
     mcp2515_write(MCP_RXB1CTRL, 0x60);
     
     // Enable receive interrupt for RX0 and RX1
-    mcp2515_write(MCP_CANINTE, 0x03);
+    mcp2515_write(MCP_CANINTE, MCP_RX_INT);
 
     // Set PD3 as input pin for ATMEGA (to send interrupts)
     DDRD &= ~(1 << PD3);
+    PORTD |= (1 << PD3); // enable pull-up resistor
+
+    // Trigger interrupt on falling edge (INT line goes low when active)
+    MCUCR |= (1 << ISC11);
+    MCUCR &= ~(1 << ISC10);
 
     _delay_ms(1);
 }
 
 void mcp2515_request_to_send(uint8_t buffer_id){
     spi_master_select_slave(RND_SS);
-    uint8_t cmd = 0x80 | (buffer_id & 7);
+    uint8_t cmd = 0x80 | (1 << buffer_id);
     spi_master_transmit_byte(cmd);
     spi_master_deselect_slave(RND_SS);
 }

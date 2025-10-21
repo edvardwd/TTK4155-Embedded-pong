@@ -2,18 +2,23 @@
 #define CAN_H
 
 #include "drivers/mcp2515.h"
-
+#include "avr/interrupt.h"
+#include "string.h"
 
 typedef struct{
     uint16_t id;
     uint8_t data_length;
     uint8_t data[8];
-} can_message;
+} can_message_t;
 
 void can_init();
 
-void can_send_message(can_message* msg);
+void can_send_message(can_message_t* msg, uint8_t transmit_buffer_n);
 
-can_message* can_create_message(uint16_t id, char* message);
+void can_create_message(can_message_t* message_buf, uint16_t id, char* message);
+void can_print_message(can_message_t* msg);
+
+void *can_read_message(can_message_t *msg, uint8_t rx_buffer_n);
+void can_process_interrupt();
 
 #endif

@@ -62,6 +62,20 @@ void test_adc() {
 //     test_message.data = {'h', 'e', 'i'}
 // }
 
+void test_can(){
+    char* tests[4] = {"Hei!", "Halla!", "Extra", "coop"};
+    for (uint8_t i = 0; i < 1; i ++){
+        can_message_t msg;
+        can_create_message(&msg, i + 1, tests[i]);
+        printf("Trying to send to buffer TX%u:\n", i % 2);
+        can_print_message(&msg);
+        can_send_message(&msg, i % 2);
+
+        printf("Message sent, waiting for interrupt...\n");
+        _delay_ms(100);  // Give time for loopback and interrupt
+    }
+}
+
 
 int main() {
     uart_init(UBRR);
@@ -75,21 +89,32 @@ int main() {
     oled_init_minimal();
     _delay_ms(200);
 
-    mcp2515_init();
-    menu_t* menu = init_menu();
+    can_init();
+    
+    
 
-    for (uint8_t i = 0; i < 8; i++)
-    {
-        menu_t* child = (menu->sub_menus[i]);
 
-        oled_print(i*8, 0, child->title);
+    test_can();
+
+    while(1){
+        can_process_interrupt();
+        _delay_ms(50);
     }
 
-    while (1){
-        navigate_menu(menu);
+    // menu_t* menu = init_menu();
 
-        _delay_ms(10);
+    // for (uint8_t i = 0; i < 8; i++)
+    // {
+    //     menu_t* child = (menu->sub_menus[i]);
 
-    }
+    //     oled_print(i*8, 0, child->title);
+    // }
+
+    // while (1){
+    //     navigate_menu(menu);
+
+    //     _delay_ms(10);
+
+    // }
     return 0;
 }
