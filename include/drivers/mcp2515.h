@@ -202,9 +202,9 @@ Copyright 2003 Kimberly Otten Software Consulting
 void mcp2515_init();
 uint8_t mcp2515_read(uint8_t address);
 void mcp2515_write(uint8_t address, uint8_t data);
-void mcp2515_request_to_send();
-void mcp2515_bit_modify(uint8_t adress, uint8_t mask, uint8_t data);
+void mcp2515_request_to_send(uint8_t buffer_id);
+void mcp2515_bit_modify(uint8_t address, uint8_t mask, uint8_t data);
 void mcp2515_reset();
-void mcp_2515_read_status();
+uint8_t mcp_2515_read_status();
 
 #endif

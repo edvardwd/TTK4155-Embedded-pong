@@ -66,32 +66,30 @@ void test_adc() {
 int main() {
     uart_init(UBRR);
     xmem_init();
-    while (1){
-        printf("Hei\n");
-        _delay_ms(50);
+    
+    adc_init();
+    volatile pos_t joystick;
+    volatile pos_t slider;
+
+    spi_master_init();
+    oled_init_minimal();
+    _delay_ms(200);
+
+    mcp2515_init();
+    menu_t* menu = init_menu();
+
+    for (uint8_t i = 0; i < 8; i++)
+    {
+        menu_t* child = (menu->sub_menus[i]);
+
+        oled_print(i*8, 0, child->title);
     }
-    // adc_init();
-    // volatile pos_t joystick;
-    // volatile pos_t slider;
 
-    // spi_master_init();
-    // oled_init_minimal();
-    // _delay_ms(200);
+    while (1){
+        navigate_menu(menu);
 
-    // menu_t* menu = init_menu();
+        _delay_ms(10);
 
-    // for (uint8_t i = 0; i < 8; i++)
-    // {
-    //     menu_t* child = (menu->sub_menus[i]);
-
-    //     oled_print(i*8, 0, child->title);
-    // }
-
-    // while (1){
-    //     navigate_menu(menu);
-
-    //     _delay_ms(10);
-
-    // }
+    }
     return 0;
 }
