@@ -12,9 +12,9 @@ void uart_init(unsigned int ubrr) {
     UCSR0C = (1 << URSEL0) | (1 << USBS0) | (3 << UCSZ00);
 
     // Set up stdio
-    FILE* uart_stream = fdevopen(uart_putchar, uart_getchar);
-    stdout = uart_stream;
-    stdin = uart_stream;
+    static FILE uart_stream = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
+    stdout = &uart_stream;
+    stdin = &uart_stream;
 }
 
 void uart_transmit(unsigned char data) {

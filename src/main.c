@@ -47,12 +47,6 @@ void test_latch() {
 }
 
 void test_adc() {
-    // volatile uint8_t x = ADC[0];
-    // volatile uint8_t y = ADC[0];
-    // volatile uint8_t slider1 = ADC[0];
-    // volatile uint8_t slider2 = ADC[0];
-
-
     // printf("X-pos: %4d, Y-pos: %4d\n", x, y);
     for (uint8_t i = 0; i < 4; i++){
         volatile uint8_t val = ADC[i];
@@ -72,38 +66,32 @@ void test_adc() {
 int main() {
     uart_init(UBRR);
     xmem_init();
-    // SRAM_test();
-    // test_write();
-    // test_receive_transmit();
-    // test_stdio();
-    adc_init();
-    volatile pos_t joystick;
-    volatile pos_t slider;
-
-    spi_master_init();
-    oled_init_minimal();
-    _delay_ms(200);
-
-    menu_t* menu = init_menu();
-
-    for (uint8_t i = 0; i < 8; i++)
-    {
-        menu_t* child = (menu->sub_menus[i]);
-
-        oled_print(i*8, 0, child->title);
+    while (1){
+        printf("Hei\n");
+        _delay_ms(50);
     }
-    // for (uint8_t i = 0; i < sizeof(BYTES); i++){
-    //     spi_master_select_slave(IO_SS_PIN);
-    //     spi_master_transmit_byte(BYTES[i]);
-    //     PORTB |= (1 << IO_SS_PIN); // Deselect
+    // adc_init();
+    // volatile pos_t joystick;
+    // volatile pos_t slider;
 
+    // spi_master_init();
+    // oled_init_minimal();
+    // _delay_ms(200);
+
+    // menu_t* menu = init_menu();
+
+    // for (uint8_t i = 0; i < 8; i++)
+    // {
+    //     menu_t* child = (menu->sub_menus[i]);
+
+    //     oled_print(i*8, 0, child->title);
     // }
 
-    while (1){
-        navigate_menu(menu);
+    // while (1){
+    //     navigate_menu(menu);
 
-        _delay_ms(10);
+    //     _delay_ms(10);
 
-    }
+    // }
     return 0;
 }
