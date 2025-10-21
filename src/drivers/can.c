@@ -1,7 +1,5 @@
 #include "drivers/can.h"
 
-
-
 void can_init(){
     mcp2515_init();
     // Set loopback mode
@@ -16,8 +14,6 @@ void can_init(){
     }
 
     printf("MCP2515 initialized successfully (Loopback mode active)\n");
-
-    return 0;
 }
 
 

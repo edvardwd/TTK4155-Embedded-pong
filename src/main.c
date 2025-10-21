@@ -61,12 +61,12 @@ void test_adc() {
 }
 
 
-void test_can(){
-    can_message test_message;
-    test_message.id = 1;
-    test_message.data_length = 3;
-    test_message.data = {'h', 'e', 'i'};
-}
+// void test_can(){
+//     can_message test_message;
+//     test_message.id = 1;
+//     test_message.data_length = 3;
+//     test_message.data = {'h', 'e', 'i'}
+// }
 
 
 int main() {
@@ -86,7 +86,6 @@ int main() {
 
     menu_t* menu = init_menu();
 
-
     for (uint8_t i = 0; i < 8; i++)
     {
         menu_t* child = (menu->sub_menus[i]);
@@ -104,6 +103,7 @@ int main() {
         navigate_menu(menu);
 
         _delay_ms(10);
+
     }
     return 0;
 }

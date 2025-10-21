@@ -22,9 +22,9 @@ void mcp2515_write(uint8_t address, uint8_t data){
     spi_master_deselect_slave(RND_SS);
 }
 void mcp2515_init(){
-    uint8_t value ;
     spi_master_init () ; // Initialize SPI
     mcp2515_reset () ; // Send reset - command
+    _delay_ms(10);
 
     // Self - test
     uint8_t value = mcp2515_read(MCP_CANSTAT);
@@ -67,4 +67,4 @@ void mcp2515_bit_modify(uint8_t adress, uint8_t mask, uint8_t data){
     spi_master_deselect_slave(RND_SS);
 }
 
-void mcp_2515_read_status();
+void mcp_2515_read_status(){};

@@ -53,6 +53,6 @@ void spi_master_select_slave(uint8_t slave_id){
     PORTB &= ~(1 << slave_id);
 }
 
-void spi_master_deselct_slave(uint8_t slave_id){
+void spi_master_deselect_slave(uint8_t slave_id){
     PORTB |= (1 << slave_id);
 }
