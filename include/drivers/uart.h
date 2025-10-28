@@ -12,6 +12,7 @@
 
 void uart_init(unsigned int ubrr);
 void uart_transmit(unsigned char data);
+void uart_transmit_string(unsigned char* string);
 unsigned char uart_receive();
 
 // For stdio

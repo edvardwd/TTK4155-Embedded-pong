@@ -64,15 +64,14 @@ void test_adc() {
 
 void test_can(){
     char* tests[4] = {"Hei!", "Halla!", "Extra", "coop"};
-    for (uint8_t i = 0; i < 1; i ++){
+    for (uint8_t i = 0; i < 4; i ++){
         can_message_t msg;
         can_create_message(&msg, i + 1, tests[i]);
-        printf("Trying to send to buffer TX%u:\n", i % 2);
+        uart_transmit_string("Sending...\n");
         can_print_message(&msg);
         can_send_message(&msg, i % 2);
-
-        printf("Message sent, waiting for interrupt...\n");
-        _delay_ms(100);  // Give time for loopback and interrupt
+        _delay_ms(10);
+        can_process_interrupt();
     }
 }
 
@@ -92,11 +91,10 @@ int main() {
     can_init();
     
     
-
-
     test_can();
 
     while(1){
+        
         can_process_interrupt();
         _delay_ms(50);
     }

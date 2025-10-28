@@ -183,6 +183,7 @@ Copyright 2003 Kimberly Otten Software Consulting
 
 #include "drivers/spi.h"
 #include "util/delay.h"
+#include "drivers/uart.h"
 
 
 

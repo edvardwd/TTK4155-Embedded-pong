@@ -30,7 +30,7 @@ void mcp2515_init(){
     printf("CANSTAT after reset: 0x%02x\n", value);
     
     if ((value & MODE_MASK) != MODE_CONFIG) {
-        printf("MCP2515 NOT in config mode!\n");
+        uart_transmit_string("MCP2515 NOT in config mode!\n");
         printf("Mode bits: 0x%02x (expected 0x%02x)\n", 
                (value & MODE_MASK), MODE_CONFIG);
         

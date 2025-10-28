@@ -22,6 +22,12 @@ void uart_transmit(unsigned char data) {
     UDR0 = data;
 }
 
+void uart_transmit_string(unsigned char* string){
+    while (*string){
+        uart_transmit(*string++);
+    }
+}
+
 
 unsigned char uart_receive() {
     while (!(UCSR0A & (1 << RXC0))); // Wait until receive complete

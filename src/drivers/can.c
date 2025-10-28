@@ -1,5 +1,7 @@
 #include "drivers/can.h"
 
+volatile uint8_t CAN_INTERRUPT_FLAG = 0;
+
 void can_init(){
     mcp2515_init();
 
@@ -14,7 +16,7 @@ void can_init(){
         return;
     }
 
-    printf("MCP2515 initialized successfully (Loopback mode active)\n\n");
+    uart_transmit_string("MCP2515 initialized successfully (Loopback mode active)\n");
     _delay_ms(50);
 
     GICR |= (1 << INT1);  // Enable INT1
@@ -44,28 +46,35 @@ void can_send_message(can_message_t* msg, uint8_t transmit_buffer_n){
         if (i >= 8) break;
         mcp2515_write(MCP_TXB0 + offset + i, msg->data[i]);
     }
+    printf("Filling transmit buffer %u \n", transmit_buffer_n);
     mcp2515_request_to_send(transmit_buffer_n);
 }
 
 void can_create_message(can_message_t* message_buf, uint16_t id, char* message){
     message_buf->id = id;
     message_buf->data_length = strlen(message);
-    memcpy(message_buf->data, message, message_buf->data_length); 
+    // message_buf->data[message_buf->data_length] = '\0'; // Terminate string
+    memcpy(message_buf->data, message, message_buf->data_length + 1); 
 }
 
 void can_print_message(can_message_t *msg){
     printf("ID: %u\tlen: %u\t%s\n", msg->id, msg->data_length, msg->data);
 }
 
-void *can_read_message(can_message_t *msg, uint8_t rx_buffer_n){
+void can_read_message(can_message_t *msg, uint8_t rx_buffer_n){
     printf("Trying to read buffer RX%u\n", rx_buffer_n);
     spi_master_select_slave(RND_SS);
     spi_master_transmit_byte(MCP_READ_RX0 + 0x4 * rx_buffer_n); // initiate read of RX buffer n
     
     // Fill id field
-    msg->id = 0;
-    msg->id |= ((uint16_t) spi_master_read_byte() << 3); // id_high
-    msg->id |= ((uint16_t) spi_master_read_byte() & 7); // id_low
+    uint8_t sidh = spi_master_read_byte();
+    uint8_t sidl = spi_master_read_byte();
+    
+    msg->id = ((uint16_t) sidh << 3) | (sidl >> 5);
+
+    // dummy (extened id)
+    spi_master_read_byte();
+    spi_master_read_byte(); 
 
     // Fill length field
     msg->data_length = spi_master_read_byte() & 0xf;
@@ -74,12 +83,12 @@ void *can_read_message(can_message_t *msg, uint8_t rx_buffer_n){
     for (uint8_t i = 0; i < msg->data_length; i++){
         msg->data[i] = spi_master_read_byte();
     }
+    msg->data[msg->data_length] = '\0';
     spi_master_deselect_slave(RND_SS); // Flag is automatically cleared when using MCP_READ_RXn
-    printf("Received message:\n");
-    can_print_message(&msg);
+    uart_transmit_string("Received message:\n");
+    can_print_message(msg);
 }
 
-volatile uint8_t CAN_INTERRUPT_FLAG = 0;
 
 ISR(INT1_vect){
     CAN_INTERRUPT_FLAG = 1;
@@ -88,27 +97,30 @@ ISR(INT1_vect){
 void can_process_interrupt(){
     if (!CAN_INTERRUPT_FLAG) return;
 
-    printf("ISR caalled!\n");
-    _delay_ms(100);
+    uart_transmit_string("ISR called!\n");
     uint8_t canintf = mcp2515_read(MCP_CANINTF);
-    printf("CANINTF: %x\n", canintf);
+    //printf("CANINTF: %x\n", canintf);
 
     if (canintf & MCP_RX0IF) {
         // Message received in RXB0
         can_message_t msg;
         can_read_message(&msg, 0);
-        printf("Message in RX%u:\n", 0);
+        //printf("Message in RX%u:\n", 0);
+        uart_transmit_string("Received..\n");
         can_print_message(&msg);
+        mcp2515_bit_modify(MCP_CANINTF, (MCP_RX0IF), 0);
     }
-    else if (canintf & MCP_RX1IF) {
+    if (canintf & MCP_RX1IF) {
         // Message received in RXB1
         can_message_t msg;
-        printf("Message in RX%u:\n", 1);
+        //printf("Message in RX%u:\n", 1);
+        can_read_message(&msg, 1);
         can_print_message(&msg);
+        mcp2515_bit_modify(MCP_CANINTF, (MCP_RX1IF), 0);
     }
 
     else {
-        printf("Undefined interrupt!\n");
+        //printf("Undefined interrupt!\n");
         // Clear all interrupt flags just in case
         mcp2515_bit_modify(MCP_CANINTF, 0xff, 0x00);
     }
