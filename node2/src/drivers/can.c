@@ -1,4 +1,3 @@
-
 #include "sam.h"
 #include "drivers/can.h"
 #include <stdio.h>

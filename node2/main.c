@@ -2,6 +2,7 @@
 #include <stdarg.h>
 #include "sam.h"
 #include "drivers/uart.h"
+#include "drivers/can.h"
 
 /*
  * Remember to update the Makefile with the (relative) path to the uart.c file.
@@ -34,6 +35,10 @@ int main(){
 
     // Set PB13 high
     PIOB->PIO_SODR = (1u << 13); 
+
+    // Config CAN_BR
+    //    can_init((CanInit){.brp = F_CPU/2000000-1, .phase1 = 5, .phase2 = 1, .propag = 6}, 0);
+    can_init((CanInit){.brp = 6, .propag = 2, .phase1 = 11, .phase2 = 7, .sjw = 1, .smp = 0}, 1); // 500kbit/s according to Chat
 
 
 
