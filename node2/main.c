@@ -14,14 +14,14 @@
  */
 //#include "../path_to/uart.h"
 
-int main()
-{
+
+int main(){
     SystemInit();
     WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
 
-    //Uncomment after including uart above
-    //uart_init(/*cpufreq*/, /*baud*/);
-    //printf("Hello World\n\r");
+    // Uncomment after including uart above
+    uart_init(F_CPU, 9600);
+    printf("Hello World\n\r");
 
     // Turn on PIOB clock
     PMC->PMC_PCER0 = (1u << ID_PIOB);
@@ -41,5 +41,5 @@ int main()
     {
         /* code */
     }
-    
+    return 0;
 }
