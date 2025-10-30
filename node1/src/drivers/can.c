@@ -6,17 +6,17 @@ void can_init(){
     mcp2515_init();
 
     // Set loopback mode
-    mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_LOOPBACK);
+    mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_NORMAL);
     _delay_ms(1);
 
     // Verify loopback mode
     uint8_t value = mcp2515_read(MCP_CANSTAT);
-    if ((value & MODE_MASK) != MODE_LOOPBACK) {
-        printf("MCP2515 failed to enter LOOPBACK mode! (CANSTAT=0x%02X)\n", value);
+    if ((value & MODE_MASK) != MODE_NORMAL) {
+        printf("MCP2515 failed to enter NORMAL mode! (CANSTAT=0x%02X)\n", value);
         return;
     }
 
-    uart_transmit_string("MCP2515 initialized successfully (Loopback mode active)\n");
+    uart_transmit_string("MCP2515 initialized successfully (Normal mode active)\n");
     _delay_ms(50);
 
     GICR |= (1 << INT1);  // Enable INT1
@@ -52,9 +52,16 @@ void can_send_message(can_message_t* msg, uint8_t transmit_buffer_n){
 
 void can_create_message(can_message_t* message_buf, uint16_t id, char* message){
     message_buf->id = id;
-    message_buf->data_length = strlen(message);
-    // message_buf->data[message_buf->data_length] = '\0'; // Terminate string
-    memcpy(message_buf->data, message, message_buf->data_length + 1); 
+    //message_buf->data_length = strlen(message);
+    //// message_buf->data[message_buf->data_length] = '\0'; // Terminate string
+    //memcpy(message_buf->data, message, message_buf->data_length + 1); 
+
+    // CAN has max 8 bytes data
+    uint8_t len = strlen(message);
+    if (len > 8) len = 8;
+
+    message_buf->data_length = len;
+    memcpy(message_buf->data, message, len);
 }
 
 void can_print_message(can_message_t *msg){

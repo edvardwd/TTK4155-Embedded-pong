@@ -3,6 +3,7 @@
 #include "sam.h"
 #include "drivers/uart.h"
 #include "drivers/can.h"
+#include "drivers/can_controller.h"
 
 /*
  * Remember to update the Makefile with the (relative) path to the uart.c file.
@@ -22,29 +23,41 @@ int main(){
 
     // Uncomment after including uart above
     uart_init(F_CPU, 9600);
-    printf("Hello World\n\r");
-
-    // Turn on PIOB clock
-    PMC->PMC_PCER0 = (1u << ID_PIOB);
-
-    // Let PIOB control PB13
-    PIOB->PIO_PER = (1u << 13);
-
-    // Configure PB13 as output
-    PIOB->PIO_OER = (1u << 13);
-
-    // Set PB13 high
-    PIOB->PIO_SODR = (1u << 13); 
+    printf("Node 2 starting...\n\r");
 
     // Config CAN_BR
     //    can_init((CanInit){.brp = F_CPU/2000000-1, .phase1 = 5, .phase2 = 1, .propag = 6}, 0);
-    can_init((CanInit){.brp = 6, .propag = 2, .phase1 = 11, .phase2 = 7, .sjw = 1, .smp = 0}, 1); // 500kbit/s according to Chat
+    //can_init((CanInit){.brp = 6, .propag = 2, .phase1 = 11, .phase2 = 7, .sjw = 1, .smp = 0}, 1); // 500kbit/s according to Chat
 
+    //can_message_t msg;
+    //can_create_message(&msg, 0x01, "Hello");
 
+    // Send meldingen
+    //can_send_message(&msg);
 
+    //uart_transmit_string("Message sent: 'Hello'\n");
+
+    // Bit-timing som matcher MCP2515 (≈ 500 kbit/s)
+    uint32_t can_br =
+        (6  << 16) |   // BRP
+        (2  << 0)  |   // PROPAG
+        (11 << 4)  |   // PHASE1
+        (7  << 8)  |   // PHASE2
+        (1  << 12) |   // SJW
+        (0  << 14);    // SMP
+
+    can_init_def_tx_rx_mb(can_br);
+    printf("CAN initialized (Normal mode)\n");
+
+    CAN_MESSAGE msg;
     while (1)
     {
-        /* code */
+        if (can_receive(&msg, 1) == 0) {
+            printf("Received ID:%d, len:%d, data:", msg.id, msg.data_length);
+            for (uint8_t i = 0; i < msg.data_length; i++)
+                printf(" %c", msg.data[i]);
+            printf("\n");
+        }
     }
     return 0;
 }

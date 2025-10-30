@@ -77,6 +77,7 @@ void test_can(){
 
 
 int main() {
+    printf("main node1");
     uart_init(UBRR);
     xmem_init();
     
@@ -87,16 +88,25 @@ int main() {
     spi_master_init();
     oled_init_minimal();
     _delay_ms(200);
-
+    printf("før caninit");
     can_init();
+    printf("Etter");
     
     
-    test_can();
+    //test_can();
+
+    can_message_t msg;
+    can_create_message(&msg, 0x01, "Hello");
+    can_send_message(&msg, 0);
+
+    uart_transmit_string("Message sent: 'Hello'\n");
+
 
     while(1){
         
-        can_process_interrupt();
-        _delay_ms(50);
+        //can_process_interrupt();
+        _delay_ms(1000);
+        can_send_message(&msg, 0);
     }
 
     // menu_t* menu = init_menu();
