@@ -18,8 +18,8 @@
 
 
 int main(){
-    SystemInit();
     WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
+    SystemInit();
 
     // Uncomment after including uart above
     uart_init(F_CPU, 9600);
@@ -37,21 +37,22 @@ int main(){
 
     //uart_transmit_string("Message sent: 'Hello'\n");
 
-    // Bit-timing som matcher MCP2515 (≈ 500 kbit/s)
+    // Bit-timing matching MCP2515 (≈ 500 kbit/s)
     uint32_t can_br =
         (6  << 16) |   // BRP
-        (2  << 0)  |   // PROPAG
-        (11 << 4)  |   // PHASE1
-        (7  << 8)  |   // PHASE2
-        (1  << 12) |   // SJW
+        (4  << 0)  |   // PROPAG
+        (12 << 4)  |   // PHASE1
+        (4 << 8)  |   // PHASE2
+        (3  << 12) |   // SJW
         (0  << 14);    // SMP
+
+    
 
     can_init_def_tx_rx_mb(can_br);
     printf("CAN initialized (Normal mode)\n");
 
     CAN_MESSAGE msg;
-    while (1)
-    {
+    while (1){
         if (can_receive(&msg, 1) == 0) {
             printf("Received ID:%d, len:%d, data:", msg.id, msg.data_length);
             for (uint8_t i = 0; i < msg.data_length; i++)
@@ -59,5 +60,6 @@ int main(){
             printf("\n");
         }
     }
+
     return 0;
 }

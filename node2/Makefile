@@ -48,12 +48,14 @@ $(ELF) : $(OBJS) | $(BUILD_DIR)
 clean:
 	rm -rf $(BUILD_DIR)
 
+# Original: x-terminal-emulator -e openocd -f sam/openocd.cfg -c "program $(ELF) verify"
+# Added -none to arm- .. cmd
 .PHONY: debug
 debug: $(ELF)
 	if pgrep openocd; then killall -s 9 openocd; fi
-	x-terminal-emulator -e openocd -f sam/openocd.cfg -c "program $(ELF) verify"
+	gnome-terminal -- openocd -f sam/openocd.cfg -c "program $(ELF) verify"
 	sleep 5
-	arm-eabi-gdb -tui -iex "target extended-remote localhost:3333" $(ELF)
+	arm-none-eabi-gdb -tui -iex "target extended-remote localhost:3333" $(ELF)
 	killall -s 9 openocd	
 
 .PHONY: flash
