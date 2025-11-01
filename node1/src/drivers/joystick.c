@@ -1,11 +1,6 @@
 #include "drivers/joystick.h"
+/////////////////////////////////////////////
 
-
-
-// void pos_calibrate() {
-//     uint8_t x_center = 100;
-//     uint8_t y_center = adc_read(1);
-// }
 
 int8_t map_to_percent(uint8_t raw, uint8_t min, uint8_t center, uint8_t max) {
     int8_t percent;
@@ -87,5 +82,3 @@ void joystick_print_dir(joystick_dir_t dir) {
 
     printf("\n");
 }
-
-

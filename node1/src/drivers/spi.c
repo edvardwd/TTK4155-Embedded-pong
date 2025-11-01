@@ -1,5 +1,5 @@
 #include "drivers/spi.h"
-
+/////////////////////////////////////////////
 
 void spi_master_init(){
     // Set MOSI, SCK, IO_SS, DISP_SS, RND_SS and DATA_N_C as output, rest input

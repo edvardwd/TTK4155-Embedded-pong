@@ -1,11 +1,11 @@
 #ifndef SPI_H
 #define SPI_H
-///////////////////////////////////////////////////////////////////
-#include "avr/io.h"
+/////////////////////////////////////////////
 
+#include "avr/io.h"
+/////////////////////////////////////////////
 
 #define DDR_SPI DDRB
-
 #define DATA_N_C PB1
 #define RND_SS PB2
 #define DISP_SS_PIN PB3
@@ -13,7 +13,7 @@
 #define MOSI_PIN PB5
 #define MISO_PIN PB6
 #define SCK_PIN PB7
-
+/////////////////////////////////////////////
 
 void spi_master_init();
 
@@ -27,5 +27,5 @@ void spi_master_read_bytes(char* read_buffer, uint16_t length);
 void spi_master_select_slave(uint8_t slave_id);
 void spi_master_deselect_slave(uint8_t slave_id);
 
-///////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////
 #endif

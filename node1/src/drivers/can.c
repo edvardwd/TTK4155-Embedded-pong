@@ -1,4 +1,5 @@
 #include "drivers/can.h"
+/////////////////////////////////////////////
 
 volatile uint8_t CAN_INTERRUPT_FLAG = 0;
 
@@ -62,6 +63,7 @@ void can_create_message(can_message_t* message_buf, uint16_t id, char* message){
 
     message_buf->data_length = len;
     memcpy(message_buf->data, message, len);
+    message_buf->data[len] = '\0'; // Terminate string
 }
 
 void can_print_message(can_message_t *msg){

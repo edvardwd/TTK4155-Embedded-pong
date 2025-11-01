@@ -1,5 +1,5 @@
 #include "drivers/adc.h"
-
+/////////////////////////////////////////////
 
 void adc_init(){
     // Init clock

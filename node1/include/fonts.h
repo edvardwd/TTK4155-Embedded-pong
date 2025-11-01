@@ -6,7 +6,7 @@
  */
 #ifndef FONTS_H_
 #define FONTS_H_
-
+/////////////////////////////////////////////
 
 #include <avr/pgmspace.h>
 
@@ -19,4 +19,5 @@ const unsigned char PROGMEM font5[95][5];
 // Font 4x6 - Small
 const unsigned char PROGMEM font4[95][4];
 
+/////////////////////////////////////////////
 #endif

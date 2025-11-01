@@ -1,26 +1,18 @@
 #ifndef OLED_H
 #define OLED_H
+/////////////////////////////////////////////
 
-///////////////////////////////////////////////////////////////////
 #include "stdint.h"
 #include "drivers/spi.h"
 #include "avr/pgmspace.h"
 #include "util/delay.h"
 #include "fonts.h"
+/////////////////////////////////////////////
 
 #define N_COLS 128
 #define SELECTED_FONT font5
 #define FONT_WIDTH 5
-
-
-// typedef enum {
-//     small,
-//     normal,
-//     large
-// } oled_font_t;
-
-// void oled_set_font(oled_font_t font);
-
+/////////////////////////////////////////////
 
 void oled_init();
 void oled_init_minimal();
@@ -47,5 +39,5 @@ void oled_circle(uint8_t x0, uint8_t y0, uint8_t r);
 
 
 
-///////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////
 #endif

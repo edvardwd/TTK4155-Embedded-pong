@@ -1,4 +1,5 @@
 #include "drivers/uart.h"
+/////////////////////////////////////////////
 
 void uart_init(unsigned int ubrr) {
     // Set baud rate

@@ -8,6 +8,7 @@
 #include "drivers/mcp2515.h"
 #include "drivers/can.h"
 #include "avr/delay.h"
+/////////////////////////////////////////////
 
 void test_receive_transmit() {
     while (1) {
@@ -88,25 +89,27 @@ int main() {
     spi_master_init();
     oled_init_minimal();
     _delay_ms(200);
-    printf("før caninit");
     can_init();
-    printf("Etter");
+
     
     
     //test_can();
 
     can_message_t msg;
-    can_create_message(&msg, 0x01, "Hello");
-    can_send_message(&msg, 0);
+    
 
-    uart_transmit_string("Message sent: 'Hello'\n");
+    // uart_transmit_string("Message sent: 'Hello'\r\n");
 
-
+    uint16_t id = 0x01;
     while(1){
         
         //can_process_interrupt();
-        _delay_ms(1000);
+        // Should send "Hello every second"
+        id++;
         can_send_message(&msg, 0);
+        can_create_message(&msg, id, "Hello");
+        _delay_ms(1000);
+        // can_send_message(&msg, 0);
     }
 
     // menu_t* menu = init_menu();
