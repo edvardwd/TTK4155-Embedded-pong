@@ -12,7 +12,7 @@
 
 
 int main() {
-    printf("main node1");
+    //printf("main node1");
     uart_init(UBRR);
     xmem_init();
     
@@ -34,14 +34,14 @@ int main() {
 
     // uart_transmit_string("Message sent: 'Hello'\r\n");
 
-    uint16_t id = 0x01;
+    uint16_t id = 0x00;
     while(1){
         
         //can_process_interrupt();
         // Should send "Hello every second"
-        id++;
-        can_send_message(&msg, 0);
         can_create_message(&msg, id, "Hello");
+        can_send_message(&msg, 0);
+        id++;
         _delay_ms(1000);
         // can_send_message(&msg, 0);
     }

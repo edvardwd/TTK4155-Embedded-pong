@@ -31,9 +31,6 @@ void mcp2515_init(){
     
     if ((value & MODE_MASK) != MODE_CONFIG) {
         uart_transmit_string("MCP2515 NOT in config mode!\n");
-        printf("Mode bits: 0x%02x (expected 0x%02x)\n", 
-               (value & MODE_MASK), MODE_CONFIG);
-        
         return;
     }
     printf("MCP2515 is in config mode after reset!\n");
