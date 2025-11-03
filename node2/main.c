@@ -26,18 +26,19 @@ int main(){
     printf("Node 2 starting...\n\r");
 
     // Config CAN_BR
-    //    can_init((CanInit){.brp = F_CPU/2000000-1, .phase1 = 5, .phase2 = 1, .propag = 6}, 0);
-    //can_init((CanInit){.brp = 6, .propag = 2, .phase1 = 11, .phase2 = 7, .sjw = 1, .smp = 0}, 1); // 500kbit/s according to Chat
-
+    can_init((CanInit){.brp = 6, .propag = 2, .phase1 = 11, .phase2 = 7, .sjw = 1, .smp = 0}, 1); // 500kbit/s according to Chat
+    
     //can_message_t msg;
     //can_create_message(&msg, 0x01, "Hello");
-
+    
     // Send meldingen
     //can_send_message(&msg);
-
+    
     //uart_transmit_string("Message sent: 'Hello'\n");
-
+    
     // Bit-timing matching MCP2515 (≈ 500 kbit/s)
+    // can_init((CanInit){.brp = 6, .phase1 = 12, .phase2 = 4, .propag = 4,
+    // .sjw=3, .smp=0}, 0);
     uint32_t can_br =
         (6  << 16) |   // BRP
         (4  << 0)  |   // PROPAG
@@ -48,8 +49,8 @@ int main(){
 
     
 
-    can_init_def_tx_rx_mb(can_br);
-    printf("CAN initialized (Normal mode)\n");
+    //if(!can_init_def_tx_rx_mb(can_br)){
+    //printf("CAN initialized (Normal mode)\n");}
 
     CAN_MESSAGE msg;
     while (1){
