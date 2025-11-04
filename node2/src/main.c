@@ -3,6 +3,7 @@
 #include "sam.h"
 #include "drivers/uart.h"
 #include "drivers/can_controller.h"
+#include "drivers/pwm.h"
 
 /*
  * Remember to update the Makefile with the (relative) path to the uart.c file.
@@ -49,6 +50,7 @@ int main(){
         (0  << 24);    // SMP
 
     can_init(can_br, 1, 1);
+    pwm_init();
 
     //if(!can_init_def_tx_rx_mb(can_br)){
     //printf("CAN initialized (Normal mode)\n");}

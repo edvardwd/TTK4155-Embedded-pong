@@ -7,7 +7,6 @@ MCUTYPE = __SAM3X8E__
 # Do NOT use a backslash after the last file.
 SOURCE_FILES = \
 	$(BOOTUP) \
-	main.c \
 	$(wildcard src/drivers/*.c) \
 	$(wildcard src/*c)
 

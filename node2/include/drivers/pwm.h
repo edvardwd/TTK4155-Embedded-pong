@@ -1,9 +1,10 @@
-#include "component/component_pwm.h"
-#include "instance/instance_pwm.h"
-#include"component/component_pmc.h"
-#include "instance/instance_pmc.h"
+#ifndef PWM_H
+#define PWM_H
+
 #include "sam3x8e.h"
 
 
 
 void pwm_init();
+
+#endif
