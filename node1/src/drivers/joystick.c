@@ -82,3 +82,21 @@ void joystick_print_dir(joystick_dir_t dir) {
 
     printf("\n");
 }
+
+void joystick_send_pos_can(){
+    // Function to send CAN messages from node 1 to node 2
+    pos_t pos = get_pos();
+    uint16_t id = 0x43;
+    
+    // Since we send uints we convert them such that
+    // x, y is in [0, 200] (have to convert back on receiving end)
+    can_message_t msg = {
+        .id = id,
+        .data_length = 2,
+        .data = {0}
+    };
+    msg.data[0] = (uint8_t) (pos.joystick_x + 100);
+    msg.data[1] = (uint8_t) (pos.joystick_y + 100);
+
+    can_send_message(&msg, 0);
+}

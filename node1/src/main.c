@@ -25,24 +25,10 @@ int main() {
     _delay_ms(200);
     can_init();
 
-    
-    
-    //test_can();
 
-    can_message_t msg;
-    
-
-    // uart_transmit_string("Message sent: 'Hello'\r\n");
-
-    volatile uint16_t id = 0x00;
     while(1){
-        
-        //can_process_interrupt();
-        // Should send "Hello every second"
-        can_create_message(&msg, id, "Hello");
-        can_send_message(&msg, 0);
-        id++;
-        //_delay_ms(1);
+        joystick_send_pos_can();
+        _delay_ms(1);
         // can_send_message(&msg, 0);
     }
 

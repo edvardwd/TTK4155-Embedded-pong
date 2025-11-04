@@ -2,7 +2,6 @@
 #include <stdarg.h>
 #include "sam.h"
 #include "drivers/uart.h"
-#include "drivers/can.h"
 #include "drivers/can_controller.h"
 
 /*
@@ -54,10 +53,14 @@ int main(){
     //if(!can_init_def_tx_rx_mb(can_br)){
     //printf("CAN initialized (Normal mode)\n");}
 
-    CanMsg msg;
+    CAN_MESSAGE msg;
     while (1){
         if (!can_receive(&msg, 0)){
-          can_print_message(&msg);
+          if (msg.id == 0x43){
+            int8_t x = (int8_t) (msg.data[0]) - 100;
+            int8_t y = (int8_t) (msg.data[1]) - 100;
+            printf("X: %d, Y: %d\r\n", x, y);
+          }
         }
     }
     return 0;
