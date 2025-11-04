@@ -48,7 +48,7 @@ int main(){
         (2  << 12) |   // SJW
         (0  << 24);    // SMP
 
-    can_controller_init(can_br, 1, 1);
+    can_init(can_br, 1, 1);
 
     //if(!can_init_def_tx_rx_mb(can_br)){
     //printf("CAN initialized (Normal mode)\n");}
