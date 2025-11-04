@@ -1,5 +1,6 @@
 #include "sam.h"
 #include "drivers/can.h"
+#include "drivers/can_controller.h"
 #include <stdio.h>
 
 void can_printmsg(CanMsg m){
@@ -110,25 +111,28 @@ uint8_t can_rx(CanMsg* m){
     
 
     
-/*
-// Example CAN interrupt handler
-void CAN0_Handler(void){
-    char can_sr = CAN0->CAN_SR; 
+
+// // Example CAN interrupt handler
+// void CAN0_Handler(void){
+//     char can_sr = CAN0->CAN_SR; 
     
-    // RX interrupt
-    if(can_sr & (1 << rxMailbox)){
-        // Add your message-handling code here
-        can_printmsg(can_rx());
-    } else {
-        printf("CAN0 message arrived in non-used mailbox\n\r");
-    }
+//     // RX interrupt
+//     if(can_sr & (1 << rxMailbox)){
+//         // Add your message-handling code here
+//         CAN_MESSAGE msg;
+//         can_receive(&msg, rxMailbox);
+//         // can_rx()
+//         // can_printmsg(can_rx());
+//     } else {
+//         printf("CAN0 message arrived in non-used mailbox\n\r");
+//     }
     
-    if(can_sr & CAN_SR_MB0){
-        // Disable interrupt
-        CAN0->CAN_IDR = CAN_IER_MB0;
-    }
+//     if(can_sr & CAN_SR_MB0){
+//         // Disable interrupt
+//         CAN0->CAN_IDR = CAN_IER_MB0;
+//     }
     
-    NVIC_ClearPendingIRQ(ID_CAN0);
-} 
-*/
+//     NVIC_ClearPendingIRQ(ID_CAN0);
+// } 
+
 

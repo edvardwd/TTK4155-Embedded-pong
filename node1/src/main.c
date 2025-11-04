@@ -34,7 +34,7 @@ int main() {
 
     // uart_transmit_string("Message sent: 'Hello'\r\n");
 
-    uint16_t id = 0x00;
+    volatile uint16_t id = 0x00;
     while(1){
         
         //can_process_interrupt();
@@ -42,7 +42,7 @@ int main() {
         can_create_message(&msg, id, "Hello");
         can_send_message(&msg, 0);
         id++;
-        _delay_ms(1000);
+        //_delay_ms(1);
         // can_send_message(&msg, 0);
     }
 

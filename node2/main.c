@@ -18,15 +18,16 @@
 
 
 int main(){
-    WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
     SystemInit();
+    WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
+    CAN0->CAN_IDR = 0xffffffff; //Disable interrupts for debugging
 
     // Uncomment after including uart above
     uart_init(F_CPU, 9600);
     printf("Node 2 starting...\n\r");
 
     // Config CAN_BR
-    can_init((CanInit){.brp = 6, .propag = 2, .phase1 = 11, .phase2 = 7, .sjw = 1, .smp = 0}, 1); // 500kbit/s according to Chat
+    // can_init((CanInit){.brp = 6, .propag = 2, .phase1 = 11, .phase2 = 7, .sjw = 1, .smp = 0}, 1); // 500kbit/s according to Chat
     
     //can_message_t msg;
     //can_create_message(&msg, 0x01, "Hello");
@@ -36,31 +37,28 @@ int main(){
     
     //uart_transmit_string("Message sent: 'Hello'\n");
     
-    // Bit-timing matching MCP2515 (≈ 500 kbit/s)
-    // can_init((CanInit){.brp = 6, .phase1 = 12, .phase2 = 4, .propag = 4,
-    // .sjw=3, .smp=0}, 0);
-    uint32_t can_br =
-        (6  << 16) |   // BRP
-        (4  << 0)  |   // PROPAG
-        (12 << 4)  |   // PHASE1
-        (4 << 8)  |   // PHASE2
-        (3  << 12) |   // SJW
-        (0  << 14);    // SMP
-
+    // Bit-timing matching MCP2515 (≈ 250 kbit/s)
+    // can_init((CanInit){.brp = 6, .phase1 = 12, .phase2 = 4, .propag = 4, .sjw=3, .smp=0}, 0);
     
+    //can_init((CanInit){.brp = 20, .phase1 = 7, .phase2 = 4, .propag = 1, .sjw=2, .smp=0}, 0); //THIS now matches node1
+    uint32_t can_br =
+        (20  << 16) |   // BRP
+        (1  << 8)  |   // PROPAG
+        (7 << 4)  |   // PHASE1
+        (4 << 0)  |   // PHASE2./s
+        (2  << 12) |   // SJW
+        (0  << 24);    // SMP
+
+    can_controller_init(can_br, 1, 1);
 
     //if(!can_init_def_tx_rx_mb(can_br)){
     //printf("CAN initialized (Normal mode)\n");}
 
-    CAN_MESSAGE msg;
+    CanMsg msg;
     while (1){
-        if (can_receive(&msg, 1) == 0) {
-            printf("Received ID:%d, len:%d, data:", msg.id, msg.data_length);
-            for (uint8_t i = 0; i < msg.data_length; i++)
-                printf(" %c", msg.data[i]);
-            printf("\n");
+        if (!can_receive(&msg, 0)){
+          can_print_message(&msg);
         }
     }
-
     return 0;
 }

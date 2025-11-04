@@ -35,9 +35,9 @@ void mcp2515_init(){
     }
     printf("MCP2515 is in config mode after reset!\n");
     // More initialization
-    mcp2515_write(MCP_CNF1, 0x40); //SJW = 2 * TQ, BRP = 0
+    mcp2515_write(MCP_CNF1, 0x41); //SJW = 2 * TQ, BRP = 1
     mcp2515_write(MCP_CNF2, 0x80 | (7 << 3) | 1); // BTLMODE=1, SAM=0 (bus line is sampled once at sample point), PHSEG1=7, PRSEG=1
-    mcp2515_write(MCP_CNF3, 0x4); // PHSEG2=4
+    mcp2515_write(MCP_CNF3, 0x04); // PHSEG2=4
 
     // Accept all messages (bypass filters)
     mcp2515_write(MCP_RXB0CTRL, 0x60); // RXM1:RMX0 = 11

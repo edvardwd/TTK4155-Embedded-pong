@@ -206,3 +206,8 @@ uint8_t can_receive(CAN_MESSAGE* can_msg, uint8_t rx_mb_id)
 	}
 }
 
+void can_print_message(CAN_MESSAGE *msg){
+    printf("ID: %u\tlen: %u\t%s\n", msg->id, msg->data_length, msg->data);
+}
+
+
