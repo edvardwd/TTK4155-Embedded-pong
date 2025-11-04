@@ -4,6 +4,7 @@
 #include "drivers/uart.h"
 #include "drivers/can_controller.h"
 #include "drivers/pwm.h"
+#include "drivers/servo.h"
 
 /*
  * Remember to update the Makefile with the (relative) path to the uart.c file.
@@ -51,7 +52,8 @@ int main(){
 
     can_init(can_br, 1, 1);
     pwm_init();
-
+    uint32_t sleep = 1000000;
+    while (sleep--);
     //if(!can_init_def_tx_rx_mb(can_br)){
     //printf("CAN initialized (Normal mode)\n");}
 
@@ -59,9 +61,12 @@ int main(){
     while (1){
         if (!can_receive(&msg, 0)){
           if (msg.id == 0x43){
-            int8_t x = (int8_t) (msg.data[0]) - 100;
-            int8_t y = (int8_t) (msg.data[1]) - 100;
-            printf("X: %d, Y: %d\r\n", x, y);
+            int32_t x = (int32_t) (msg.data[0]) - 100;
+            int32_t y = (int32_t) (msg.data[1]) - 100;
+            
+            servo_set_duty_cycle(x);
+            sleep = 1000000;
+            while (sleep--);
           }
         }
     }
