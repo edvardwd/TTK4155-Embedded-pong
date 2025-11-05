@@ -5,6 +5,7 @@
 #include "drivers/can_controller.h"
 #include "drivers/pwm.h"
 #include "drivers/servo.h"
+#include "drivers/ir.h"
 
 /*
  * Remember to update the Makefile with the (relative) path to the uart.c file.
@@ -52,6 +53,7 @@ int main(){
 
     can_init(can_br, 1, 1);
     pwm_init();
+    ir_init();
     // uint32_t sleep = 1000000;
     // while (sleep--);
     //if(!can_init_def_tx_rx_mb(can_br)){
@@ -66,6 +68,7 @@ int main(){
             int32_t y = (int32_t) (msg.data[1]) - 100;
             
             servo_set_duty_cycle(x);
+            if (ir_update_score()) printf("Score: %u\r\n", GAME_SCORE);
       //       // sleep = 1000000;
       //       // while (sleep--);
            }

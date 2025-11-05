@@ -4,8 +4,8 @@
 
 void pwm_init(){
     // Activate peripheral device clock
-    PMC->PMC_PCER0 |= (1 << ID_PIOB);
-    PMC->PMC_PCER1 |= (1 << ID_PWM - 32);
+    PMC->PMC_PCER0 |= PMC_PCER0_PID12; // ID12 = PIOB
+    PMC->PMC_PCER1 |= PMC_PCER1_PID36; // ID36 = PWM
 
     // Deactivate PIO
     PIOB->PIO_PDR |= PIO_PDR_P13;
@@ -35,5 +35,5 @@ void pwm_init(){
 void pwm_update_duty_cycle(uint32_t duty_cycle){
     // // duty cycle in µs
     PWM->PWM_CH_NUM[1].PWM_CDTYUPD = duty_cycle; // Set new duty cycle
-    printf("Updated dc to: %d µs\r\n", duty_cycle);
+    // printf("Updated dc to: %d µs\r\n", duty_cycle);
 }
