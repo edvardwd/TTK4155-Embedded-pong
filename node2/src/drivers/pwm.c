@@ -33,20 +33,7 @@ void pwm_init(){
 
 
 void pwm_update_duty_cycle(uint32_t duty_cycle){
-    // duty cycle in µs
-
-    PWM->PWM_SCM = PWM_SCM_UPDM_MODE1; // Select manual write of duty cycle and automatic update
-    PWM->PWM_SCM |= PWM_SCM_SYNC1; // Define synchronous channel 1
-    
-    PWM->PWM_SCUP = 0; // Wait 0 + 1 = 1 periods before update
-
-    PWM->PWM_ENA = PWM_ENA_CHID1; // Enable the synchronous channels
-
-
-    while (!(PWM->PWM_ISR2 & PWM_ISR2_WRDY)); // Wait till receive ready
-
+    // // duty cycle in µs
     PWM->PWM_CH_NUM[1].PWM_CDTYUPD = duty_cycle; // Set new duty cycle
-
     printf("Updated dc to: %d µs\r\n", duty_cycle);
-
 }

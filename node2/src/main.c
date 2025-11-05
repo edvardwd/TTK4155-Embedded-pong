@@ -52,23 +52,24 @@ int main(){
 
     can_init(can_br, 1, 1);
     pwm_init();
-    uint32_t sleep = 1000000;
-    while (sleep--);
+    // uint32_t sleep = 1000000;
+    // while (sleep--);
     //if(!can_init_def_tx_rx_mb(can_br)){
     //printf("CAN initialized (Normal mode)\n");}
 
     CAN_MESSAGE msg;
     while (1){
-        if (!can_receive(&msg, 0)){
-          if (msg.id == 0x43){
+      // printf("Message recieved");
+      if (!can_receive(&msg, 0)){
+        if (msg.id == 0x43){
             int32_t x = (int32_t) (msg.data[0]) - 100;
             int32_t y = (int32_t) (msg.data[1]) - 100;
             
             servo_set_duty_cycle(x);
-            sleep = 1000000;
-            while (sleep--);
-          }
-        }
+      //       // sleep = 1000000;
+      //       // while (sleep--);
+           }
+      }
     }
     return 0;
 }
