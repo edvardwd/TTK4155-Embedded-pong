@@ -71,6 +71,24 @@ void can_print_message(can_message_t *msg){
     printf("ID: %u\tlen: %u\t%s\n", msg->id, msg->data_length, msg->data);
 }
 
+void can_send_x_pos(){
+    // Sends joystick_x and slider_x over CAN
+    pos_t pos = get_pos();
+    uint16_t id = 0x43;
+    
+    // Since we send uints we convert them such that
+    // x, y is in [0, 200] (have to convert back on receiving end)
+    can_message_t msg = {
+        .id = id,
+        .data_length = 2,
+        .data = {0}
+    };
+    msg.data[0] = (uint8_t) (pos.joystick_x + 100);
+    msg.data[1] = (uint8_t) (pos.slider_x + 100);
+
+    can_send_message(&msg, 0);
+}
+
 void can_read_message(can_message_t *msg, uint8_t rx_buffer_n){
     printf("Trying to read buffer RX%u\n", rx_buffer_n);
     spi_master_select_slave(RND_SS);

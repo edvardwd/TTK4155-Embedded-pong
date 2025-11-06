@@ -60,6 +60,13 @@ int main(){
     //printf("HERE");
     motor_init();
     encoder_calibrate();
+
+    delay_ms(1000);
+    printf("MIN: %d, MID: %d, MAX: %d\r\n", ENCODER_MIN, ENCODER_MID, ENCODER_MAX);
+
+    motor_go_to_pos(ENCODER_MIN + 500);
+    printf("At position: %d\r\n", encoder_get_motor_position());
+
     // uint32_t sleep = 1000000;
     // while (sleep--);
     //if(!can_init_def_tx_rx_mb(can_br)){
@@ -70,20 +77,17 @@ int main(){
       // printf("Message recieved");
       if (!can_receive(&msg, 0)){
         if (msg.id == 0x43){
-            int32_t x = (int32_t) (msg.data[0]) - 100;
-            int32_t y = (int32_t) (msg.data[1]) - 100;
+            int32_t joystick_x = (int32_t) (msg.data[0]) - 100;
+            int32_t slider_x = (int32_t) (msg.data[1]) - 100;
             
-            servo_set_duty_cycle(x);
-            if (ir_detect_crossing()) printf("(Animal) Crossing detected!\n");
-            }
-          
-        if (msg.id == 0x45){
-            int32_t x = (int32_t) (msg.data[0]) - 100;
-            //printf("Touch X: %d\r\n", x);
-            motor_set_duty_cycle_and_dir(x);
-          }
-      }
+            servo_set_duty_cycle(joystick_x);
+            motor_move(slider_x);
 
+            printf("Slider_x: %d\r\n", slider_x);
+          }
+          
+        }
+    if (ir_detect_crossing()) printf("(Animal) Crossing detected!\r\n");
     //printf("Positon %d\r\n", encoder_get_motor_position());
   }
   return 0;

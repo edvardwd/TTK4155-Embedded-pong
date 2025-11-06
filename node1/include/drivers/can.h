@@ -25,6 +25,7 @@ void can_create_message(can_message_t* message_buf, uint16_t id, char* message);
 void can_print_message(can_message_t* msg);
 void can_read_message(can_message_t *msg, uint8_t rx_buffer_n);
 void can_process_interrupt();
-void can_send_joystick_pos();
+void can_send_x_pos();
+
 /////////////////////////////////////////////
 #endif
