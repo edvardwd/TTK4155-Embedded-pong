@@ -1,9 +1,6 @@
 #include "drivers/ir.h"
 
 
-
-volatile uint16_t GAME_SCORE = 0;
-
 void ir_init(){
     // Enable clock for ADC
     PMC->PMC_PCER1 |= PMC_PCER1_PID37;
@@ -28,8 +25,8 @@ uint16_t ir_read(){
 }
 
 
-uint8_t ir_update_score(){
-    // Returns 1 if score is updated, else 0
+uint8_t ir_detect_crossing(){
+    // Returns 1 if IR detects a crossing, else 0
     
     static uint16_t prev_ir_val = 1800; // approx value for no IR block
     uint16_t ir_val = ir_read();
@@ -37,7 +34,6 @@ uint8_t ir_update_score(){
     uint8_t ret_val = 0;
 
     if (ir_val < IR_ADC_THRESHOLD && prev_ir_val >= IR_ADC_THRESHOLD){
-        GAME_SCORE++;
         ret_val = 1;
     }
     prev_ir_val = ir_val;

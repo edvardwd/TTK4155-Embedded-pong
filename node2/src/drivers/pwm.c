@@ -32,8 +32,8 @@ void pwm_init(){
 }
 
 
-void pwm_update_duty_cycle(uint32_t duty_cycle){
+void pwm_update_duty_cycle(uint32_t duty_cycle, uint8_t channel){
     // // duty cycle in µs
-    PWM->PWM_CH_NUM[1].PWM_CDTYUPD = duty_cycle; // Set new duty cycle
+    PWM->PWM_CH_NUM[channel].PWM_CDTYUPD = duty_cycle; // Set new duty cycle
     // printf("Updated dc to: %d µs\r\n", duty_cycle);
 }

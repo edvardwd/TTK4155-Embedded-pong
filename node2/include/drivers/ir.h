@@ -8,10 +8,9 @@
 #define IR_ADC_THRESHOLD 1200 // Empiric value
 
 
-extern volatile uint16_t GAME_SCORE;
 
 void ir_init();
 uint16_t ir_read();
-uint8_t ir_update_score();
+uint8_t ir_detect_crossing();
 
 #endif
