@@ -29,6 +29,20 @@ void pwm_init(){
 
     // Activate channel
     PWM->PWM_ENA = PWM_ENA_CHID1;
+    ////////////////////////////////////
+        // INIT MOTOR PWM //
+    //Deactivate PIO for PB12
+    PIOB->PIO_PDR |= PIO_PDR_P12;
+    PIOB->PIO_ABSR |= PIO_ABSR_P12;  // Peripheral B
+    
+    PWM->PWM_CH_NUM[0].PWM_CMR = PWM_CMR_CPRE_CLKA | PWM_CMR_CPOL;
+
+     // Set period and duty cycle
+    PWM->PWM_CH_NUM[0].PWM_CPRD = PWM_CPRD_CPRD(50); // 50 µs channel period --> Motor freq = 20kHz
+    PWM->PWM_CH_NUM[0].PWM_CDTY = PWM_CDTY_CDTY(0); // 0ms channel duty cycle --> Motor starts still
+
+    // Activate channel
+    PWM->PWM_ENA = PWM_ENA_CHID0;
 }
 
 

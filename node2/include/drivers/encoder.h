@@ -2,9 +2,18 @@
 #define ENCODER_H
 
 #include "sam3x8e.h"
+#include "motor.h"
+#include "time.h"
+
+extern int32_t ENCODER_MAX;
+extern int32_t ENCODER_MID;
+extern int32_t ENCODER_MIN;
+
 
 void encoder_init();
 volatile int32_t encoder_get_motor_position();
 void encoder_reset();
+void encoder_calibrate();
+void delay_ms(uint32_t ms);
 
 #endif

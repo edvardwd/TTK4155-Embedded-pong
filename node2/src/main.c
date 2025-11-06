@@ -7,6 +7,7 @@
 #include "drivers/servo.h"
 #include "drivers/ir.h"
 #include "drivers/encoder.h"
+#include "drivers/motor.h"
 
 /*
  * Remember to update the Makefile with the (relative) path to the uart.c file.
@@ -56,11 +57,14 @@ int main(){
     pwm_init();
     ir_init();
     encoder_init();
+    //printf("HERE");
+    motor_init();
+    encoder_calibrate();
     // uint32_t sleep = 1000000;
     // while (sleep--);
     //if(!can_init_def_tx_rx_mb(can_br)){
-    //printf("CAN initialized (Normal mode)\n");}
-    
+    //printf("CAN initialized (Normal mode)\n");
+
     CAN_MESSAGE msg;
     while (1){
       // printf("Message recieved");
@@ -71,11 +75,16 @@ int main(){
             
             servo_set_duty_cycle(x);
             if (ir_detect_crossing()) printf("(Animal) Crossing detected!\n");
-      //       // sleep = 1000000;
-      //       // while (sleep--);
-           }
+            }
+          
+        if (msg.id == 0x45){
+            int32_t x = (int32_t) (msg.data[0]) - 100;
+            //printf("Touch X: %d\r\n", x);
+            motor_set_duty_cycle_and_dir(x);
           }
-      printf("Positon %d\r\n", encoder_get_motor_position());
       }
-    return 0;
+
+    //printf("Positon %d\r\n", encoder_get_motor_position());
+  }
+  return 0;
 }

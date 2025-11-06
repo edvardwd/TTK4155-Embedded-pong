@@ -100,3 +100,19 @@ void joystick_send_pos_can(){
 
     can_send_message(&msg, 0);
 }
+
+void touch_send_pos_can(){
+    // Function to send CAN messages from node 1 to node 2
+    pos_t pos = get_pos();
+    uint16_t id = 0x45;
+    
+    // Since we send uints we convert them such that
+    // x, y is in [0, 200] (have to convert back on receiving end)
+    can_message_t msg = {
+        .id = id,
+        .data_length = 1,
+        .data = {0}
+    };
+    msg.data[0] = (uint8_t) (pos.slider_x + 100);
+    can_send_message(&msg, 0);
+}

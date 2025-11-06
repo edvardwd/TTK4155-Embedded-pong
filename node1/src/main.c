@@ -29,6 +29,9 @@ int main() {
     while(1){
         joystick_send_pos_can();
         _delay_ms(1);
+        touch_send_pos_can();
+        _delay_ms(1);
+
         // can_send_message(&msg, 0);
     }
 

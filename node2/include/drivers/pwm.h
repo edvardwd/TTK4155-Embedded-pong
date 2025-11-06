@@ -7,6 +7,8 @@
 #define MID_DUTY_CYCLE 1500 // 1.5 ms = 1500 µs
 #define MAX_DUTY_CYCLE 2000 // 2 ms = 2000 µs
 
+#define MAX_DUTY_CYCLE_MOTOR 20 // 20µs --> Sensitive
+
 #define PWM_CH_SERVO 1
 #define PWM_CH_MOTOR 0
 
