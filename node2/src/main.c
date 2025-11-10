@@ -63,26 +63,27 @@ int main(){
 
     delay_ms(1000);
     printf("MIN: %d, MID: %d, MAX: %d\r\n", ENCODER_MIN, ENCODER_MID, ENCODER_MAX);
-
-    motor_go_to_pos(ENCODER_MIN + 500);
-    printf("At position: %d\r\n", encoder_get_motor_position());
-
     // uint32_t sleep = 1000000;
     // while (sleep--);
     //if(!can_init_def_tx_rx_mb(can_br)){
     //printf("CAN initialized (Normal mode)\n");
 
     CAN_MESSAGE msg;
+    uint32_t last_time = time_now();
     while (1){
+      uint32_t now_time = time_now();
+      float t = (float) totalSeconds(now_time - last_time);
+
       // printf("Message recieved");
       if (!can_receive(&msg, 0)){
         if (msg.id == 0x43){
-            int32_t joystick_x = (int32_t) (msg.data[0]) - 100;
-            int32_t slider_x = (int32_t) (msg.data[1]) - 100;
-            
+            int32_t joystick_x = (int32_t) (msg.data[1]) - 100;
+            int32_t slider_x = (int32_t) (msg.data[0]) - 100;
+            if (t >= PERIOD) {       // 0.01 s = 10 ms
+              motor_set_duty_cycle_and_dir(slider_x);
+              last_time = now_time;
+            }
             servo_set_duty_cycle(joystick_x);
-            motor_move(slider_x);
-
             printf("Slider_x: %d\r\n", slider_x);
           }
           

@@ -1,5 +1,6 @@
 #include "drivers/motor.h"
 
+
 void motor_init(){
   PIOC->PIO_PER |= MOTOR_DIR_PIN; //Set P23 as I/O
   PIOC->PIO_OER |= MOTOR_DIR_PIN; //Set P23 output;
@@ -11,10 +12,33 @@ void motor_set_direction(motor_dir_t dir){
 }
 
 
-void motor_set_duty_cycle_and_dir(int32_t touch_x){
-  uint32_t dir;
+void motor_set_duty_cycle_and_dir(int32_t slider_x){
+  int32_t target_pos = min(-ENCODER_MIN, ENCODER_MAX) * slider_x / 100;
+  printf("TARGET: %d \r\n", target_pos);
+  int32_t curr_pos = encoder_get_motor_position();
+  int32_t error = target_pos - curr_pos;
+  int32_t u = motor_pid(error);
+ motor_dir_t dir = curr_pos < target_pos ? REVERSE : FORWARD;
+ 
+ 
+  motor_set_direction(dir);
+  uint32_t duty_cycle = min(u, MAX_DUTY_CYCLE_MOTOR);
+  pwm_update_duty_cycle(duty_cycle, PWM_CH_MOTOR);
 }
 
+int32_t motor_pid(int32_t error){
+  static int32_t ERROR = 0;
+  ERROR += error;
+  // if (ERROR > 5000) ERROR = 5000;      // anti-windup
+  // if (ERROR < -5000) ERROR = -5000;
+
+  ERROR = (ERROR < -5000) ? -5000 : (ERROR > 5000) ? 5000 : ERROR;
+  
+  int32_t u = (int32_t) (K_P * abs(error) + PERIOD * K_I  * abs(ERROR));
+  printf("ERROR: %d \n\r", ERROR);
+  printf("INPUT: %d \r\n", u);
+  return u;
+}
 
 void motor_go_to_pos(int32_t pos){
   while(abs(encoder_get_motor_position() - pos) > ENCODER_TOL){
