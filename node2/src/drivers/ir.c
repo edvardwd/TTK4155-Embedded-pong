@@ -27,16 +27,29 @@ uint16_t ir_read(){
 
 uint8_t ir_detect_crossing(){
     // Returns 1 if IR detects a crossing, else 0
+    // TODO: revisit this
     
-    static uint16_t prev_ir_val = 3000; // approx value for no IR block
+    // static uint16_t prev_ir_val = 3000; // approx value for no IR block
+    static uint8_t counter = 0;
     uint16_t ir_val = ir_read();
     
     uint8_t ret_val = 0;
 
-    if (ir_val < IR_ADC_THRESHOLD && prev_ir_val >= IR_ADC_THRESHOLD){
-        ret_val = 1;
+    if (ir_val <  IR_ADC_THRESHOLD){
+        counter++;
+
+        if (counter >= 5){
+            ret_val = 1;
+            counter = 0;
+        }
     }
-    prev_ir_val = ir_val;
+    else {
+        counter = 0;
+    }
+    // if (ir_val < IR_ADC_THRESHOLD && prev_ir_val >= IR_ADC_THRESHOLD){
+    //     ret_val = 1;
+    // }
+    // prev_ir_val = ir_val;
     
     return ret_val;
 }

@@ -11,6 +11,7 @@
 /////////////////////////////////////////////
 
 
+
 int main() {
     //printf("main node1");
     uart_init(UBRR);
@@ -30,8 +31,9 @@ int main() {
         can_send_x_pos();
         _delay_ms(1);
 
-        if (joystick_get_button_pressed()){
-            printf("Button pressed\r\n");
+        uint8_t btn_pressed = joystick_get_button_pressed();
+        if (btn_pressed){
+            // printf("Button pressed\r\n");
             can_send_button_pressed();
         }
         // can_send_message(&msg, 0);

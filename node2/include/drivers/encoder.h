@@ -5,8 +5,8 @@
 #include "motor.h"
 #include "time.h"
 
-#define ENCODER_TOL 0x43
-#define STEADY_MOTOR_DUTY_CYCLE 13
+#define ENCODER_TOL 0x01
+#define STEADY_MOTOR_DUTY_CYCLE 17
 #define MAX_MOTOR_DUTY_CYCLE 30
 
 extern int32_t ENCODER_MAX;
