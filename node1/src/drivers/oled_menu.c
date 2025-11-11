@@ -65,7 +65,7 @@ menu_t* init_menu(void){
     // Init 4 main menu items only
     m_game1.title     = "Draw line";   m_game1.action = &game1_action; m_game1.parent = &root; m_game1.n_elems = 0;
     m_game2.title     = "Draw circle"; m_game2.action = &game3_action; m_game2.parent = &root; m_game2.n_elems = 0;
-    m_game3.title     = "Game 3";      m_game3.action = NULL;          m_game3.parent = &root; m_game3.n_elems = 0;
+    m_game3.title     = "Play";        m_game3.action = &game_play;          m_game3.parent = &root; m_game3.n_elems = 0;
     m_game4.title     = "Game 4";      m_game4.action = NULL;          m_game4.parent = &root; m_game4.n_elems = 0;
 
     // Add to root

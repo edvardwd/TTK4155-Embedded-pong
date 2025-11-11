@@ -64,13 +64,13 @@ int main(){
         if (!can_receive(&msg, 0)){
             if (msg.id == CAN_ID_JOYSTICK){
                 int32_t joystick_x = (int32_t) (msg.data[0]) - 100;
-                int32_t slider_x = (int32_t) (msg.data[1]) - 100;
+                int32_t pad_x = (int32_t) (msg.data[1]) - 100;
             if (t >= PERIOD) {       // 0.01 s = 10 ms
-                motor_set_duty_cycle_and_dir(slider_x);
+                motor_set_duty_cycle_and_dir(pad_x);
                 last_time = now_time;
             }
             servo_set_duty_cycle(joystick_x);
-            // printf("Slider_x: %d\r\n", slider_x);
+            // printf("pad_x: %d\r\n", pad_x);
             }
 
             // printf("Message received with ID: %u \r\n", msg.id);  

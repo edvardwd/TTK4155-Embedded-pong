@@ -66,7 +66,7 @@ void can_print_message(can_message_t *msg){
 }
 
 void can_send_x_pos(){
-    // Sends joystick_x and slider_x over CAN
+    // Sends joystick_x and pad_x over CAN
     pos_t pos = get_pos();
     uint16_t id = (uint16_t) CAN_ID_JOYSTICK;
     
@@ -78,7 +78,7 @@ void can_send_x_pos(){
         .data = {0}
     };
     msg.data[0] = (uint8_t) (pos.joystick_x + 100);
-    msg.data[1] = (uint8_t) (pos.slider_x + 100);
+    msg.data[1] = (uint8_t) (pos.pad_x + 100);
 
     can_send_message(&msg, 0);
 }

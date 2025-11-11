@@ -30,13 +30,13 @@ pos_t get_pos() {
 
     volatile uint8_t raw_joystick_x = adc_read();
     volatile uint8_t raw_joystick_y = adc_read();
-    volatile uint8_t raw_slider_y = adc_read();
-    volatile uint8_t raw_slider_x = adc_read();
+    volatile uint8_t raw_pad_y = adc_read();
+    volatile uint8_t raw_pad_x = adc_read();
     
     pos.joystick_x = map_to_percent(raw_joystick_x, X_MIN, X_CENTER, X_MAX);
     pos.joystick_y = map_to_percent(raw_joystick_y, Y_MIN, Y_CENTER, Y_MAX);
-    pos.slider_x = clip_value(((int16_t) raw_slider_x*100 >> 7) - 100, -100, 100); 
-    pos.slider_y = clip_value(((int16_t) raw_slider_y*100 >> 7) - 100, -100, 100);
+    pos.pad_x = clip_value(((int16_t) raw_pad_x*100 >> 7) - 100, -100, 100); 
+    pos.pad_y = clip_value(((int16_t) raw_pad_y*100 >> 7) - 100, -100, 100);
     return pos;
 }
 

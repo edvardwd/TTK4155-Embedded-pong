@@ -6,6 +6,7 @@
 #include "stdlib.h"
 #include "drivers/joystick.h"
 #include "drivers/oled.h"
+#include "game.h"
 /////////////////////////////////////////////
 
 #define MAX_SUBMENUS 8 //1 SUBMENU PER PAGE

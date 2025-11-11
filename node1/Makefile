@@ -15,7 +15,9 @@ TARGET_CPU := atmega162
 TARGET_DEVICE := m162
 
 CC := avr-gcc
-CFLAGS := -O -std=c11 -mmcu=$(TARGET_CPU) -ggdb -Iinclude #-Iinclude added later
+CFLAGS := -O -std=c11 -mmcu=$(TARGET_CPU) -ggdb -Iinclude
+CFLAGS += -DF_CPU=4915200UL # Oscillator frequency
+# CFLAGS += -Werror
 
 OBJECT_FILES = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
 

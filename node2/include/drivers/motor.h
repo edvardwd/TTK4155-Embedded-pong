@@ -18,9 +18,9 @@ typedef enum {
 
 void motor_init();
 void motor_set_direction(motor_dir_t dir);
-void motor_set_duty_cycle_and_dir(int32_t slider_x);
+void motor_set_duty_cycle_and_dir(int32_t pad_x);
 void motor_go_to_pos(int32_t pos);
-void motor_move(int32_t slider_x);
+void motor_move(int32_t pad_x);
 int32_t motor_pid(int32_t error);
 
 #endif

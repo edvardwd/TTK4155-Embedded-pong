@@ -12,8 +12,8 @@ void motor_set_direction(motor_dir_t dir){
 }
 
 
-void motor_set_duty_cycle_and_dir(int32_t slider_x){
-    int32_t target_pos = min(-ENCODER_MIN, ENCODER_MAX) * slider_x / 100;
+void motor_set_duty_cycle_and_dir(int32_t pad_x){
+    int32_t target_pos = min(-ENCODER_MIN, ENCODER_MAX) * pad_x / 100;
     // printf("TARGET: %d \r\n", target_pos);
     int32_t curr_pos = encoder_get_motor_position();
     int32_t error = target_pos - curr_pos;
@@ -49,7 +49,7 @@ void motor_go_to_pos(int32_t pos){
     pwm_update_duty_cycle(0, PWM_CH_MOTOR); // Pos reached
 }
 
-void motor_move(int32_t slider_x){
-    int32_t encoder_pos = min(-ENCODER_MIN, ENCODER_MAX) * slider_x / 100;
+void motor_move(int32_t pad_x){
+    int32_t encoder_pos = min(-ENCODER_MIN, ENCODER_MAX) * pad_x / 100;
     motor_go_to_pos(encoder_pos);
 }

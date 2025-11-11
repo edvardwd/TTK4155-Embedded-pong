@@ -5,7 +5,7 @@
 #include "stdint.h"
 #include "drivers/adc.h"
 #include "avr/io.h"
-#include "avr/delay.h"
+#include "util/delay.h"
 #include "drivers/can.h"
 /////////////////////////////////////////////
 
@@ -24,8 +24,8 @@
 typedef struct {
     int8_t joystick_x;
     int8_t joystick_y;
-    int8_t slider_x;
-    int8_t slider_y;
+    int8_t pad_x;
+    int8_t pad_y;
 } pos_t;
 
 typedef enum {
