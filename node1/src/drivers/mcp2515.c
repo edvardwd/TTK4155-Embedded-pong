@@ -27,13 +27,13 @@ void mcp2515_init(){
     _delay_ms(100);
 
     uint8_t value = mcp2515_read(MCP_CANSTAT);
-    printf("CANSTAT after reset: 0x%02x\n", value);
+    // printf("CANSTAT after reset: 0x%02x\n", value);
     
     if ((value & MODE_MASK) != MODE_CONFIG) {
-        uart_transmit_string("MCP2515 NOT in config mode!\n");
+        // uart_transmit_string("MCP2515 NOT in config mode!\n");
         return;
     }
-    printf("MCP2515 is in config mode after reset!\n");
+    // printf("MCP2515 is in config mode after reset!\n");
     // More initialization
     mcp2515_write(MCP_CNF1, 0x41); //SJW = 2 * TQ, BRP = 1
     mcp2515_write(MCP_CNF2, 0x80 | (7 << 3) | 1); // BTLMODE=1, SAM=0 (bus line is sampled once at sample point), PHSEG1=7, PRSEG=1

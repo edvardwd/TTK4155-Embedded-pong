@@ -79,7 +79,15 @@ int main(){
                 solenoid_trigger();
             }
         }
-        if (ir_detect_crossing()) printf("Crossing detected!\r\n");
+        if (ir_detect_crossing()){
+            printf("(Animal) crossing detected!\r\n");
+            CAN_MESSAGE crossingMsg = {
+                .id = CAN_ID_IR,
+                .data_length = 0,
+                ""
+            };
+            can_send(&crossingMsg, 0);
+        }
     }
     return 0;
 }

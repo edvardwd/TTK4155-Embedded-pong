@@ -46,7 +46,7 @@ for TEST in "${TESTS[@]}"; do
             DEFS+=" -DTEST_ADC -DUSE_ADC"
             ;;
         test_can)
-            DRIVERS+=" src/drivers/mcp2515.c src/drivers/can.c"
+            DRIVERS+=" src/drivers/mcp2515.c src/drivers/adc.c src/drivers/joystick.c src/drivers/can.c"
             DEFS+=" -DTEST_CAN -DUSE_CAN -DUSE_SPI"
             ;;
         *)

@@ -7,14 +7,16 @@
 #include "drivers/oled_menu.h"
 #include "drivers/mcp2515.h"
 #include "drivers/can.h"
+#include "game.h"
 #include "util/delay.h"
 /////////////////////////////////////////////
 
 
 
 int main() {
-    //printf("main node1");
     uart_init(UBRR);
+    printf("Node 1 starting..\r\n");
+    
     xmem_init();
     
     adc_init();

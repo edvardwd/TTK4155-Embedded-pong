@@ -6,18 +6,18 @@ volatile uint8_t CAN_INTERRUPT_FLAG = 0;
 void can_init(){
     mcp2515_init();
 
-    // Set loopback mode
+    // Set normal mode
     mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_NORMAL);
     _delay_ms(1);
 
-    // Verify loopback mode
+    // Verify normal mode
     uint8_t value = mcp2515_read(MCP_CANSTAT);
     if ((value & MODE_MASK) != MODE_NORMAL) {
-        printf("MCP2515 failed to enter NORMAL mode! (CANSTAT=0x%02X)\n", value);
+        // printf("MCP2515 failed to enter NORMAL mode! (CANSTAT=0x%02X)\n", value);
         return;
     }
 
-    uart_transmit_string("MCP2515 initialized successfully (Normal mode active)\n");
+    // printf("MCP2515 initialized successfully (Normal mode active)\r\n");
     _delay_ms(50);
 
     GICR |= (1 << INT1);  // Enable INT1
@@ -93,7 +93,7 @@ void can_send_button_pressed(){
 }
 
 void can_read_message(can_message_t *msg, uint8_t rx_buffer_n){
-    printf("Trying to read buffer RX%u\n", rx_buffer_n);
+    // printf("Trying to read buffer RX%u\n", rx_buffer_n);
     spi_master_select_slave(RND_SS);
     spi_master_transmit_byte(MCP_READ_RX0 + 0x4 * rx_buffer_n); // initiate read of RX buffer n
     
@@ -116,7 +116,7 @@ void can_read_message(can_message_t *msg, uint8_t rx_buffer_n){
     }
 
     spi_master_deselect_slave(RND_SS); // Flag is automatically cleared when using MCP_READ_RXn
-    printf("Received message:\r\n");
+    // printf("Received message:\r\n");
     can_print_message(msg);
 }
 
@@ -125,36 +125,37 @@ ISR(INT1_vect){
     CAN_INTERRUPT_FLAG = 1;
 }
 
-void can_process_interrupt(){
-    if (!CAN_INTERRUPT_FLAG) return;
+void can_process_interrupt(can_message_t* msg_buf){
+    if (!CAN_INTERRUPT_FLAG){
+        can_create_message(msg_buf, CAN_ID_NOP, "");
+    }
 
     printf("ISR called!\r\n");
     uint8_t canintf = mcp2515_read(MCP_CANINTF);
-    //printf("CANINTF: %x\n", canintf);
-
+        
     if (canintf & MCP_RX0IF) {
         // Message received in RXB0
-        can_message_t msg;
-        can_read_message(&msg, 0);
+        can_read_message(msg_buf, 0);
         //printf("Message in RX%u:\n", 0);
         printf("Received:\r\n");
-        can_print_message(&msg);
+        can_print_message(msg_buf);
         mcp2515_bit_modify(MCP_CANINTF, (MCP_RX0IF), 0);
     }
     if (canintf & MCP_RX1IF) {
         // Message received in RXB1
         can_message_t msg;
         //printf("Message in RX%u:\n", 1);
-        can_read_message(&msg, 1);
-        can_print_message(&msg);
+        can_read_message(msg_buf, 1);
+        can_print_message(msg_buf);
         mcp2515_bit_modify(MCP_CANINTF, (MCP_RX1IF), 0);
     }
 
     else {
         //printf("Undefined interrupt!\n");
         // Clear all interrupt flags just in case
+        can_create_message(msg_buf, CAN_ID_NOP, "UNDEF");
+        // printf("FLAG: %x\r\n", canintf);
         mcp2515_bit_modify(MCP_CANINTF, 0xff, 0x00);
     }
     CAN_INTERRUPT_FLAG = 0;
-
 }
