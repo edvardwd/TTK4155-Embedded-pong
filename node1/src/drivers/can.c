@@ -47,23 +47,17 @@ void can_send_message(can_message_t* msg, uint8_t transmit_buffer_n){
         if (i >= 8) break;
         mcp2515_write(MCP_TXB0 + offset + i, msg->data[i]);
     }
-    printf("Filling transmit buffer %u \n", transmit_buffer_n);
+    // printf("Filling transmit buffer %u \n", transmit_buffer_n);
     mcp2515_request_to_send(transmit_buffer_n);
 }
 
 void can_create_message(can_message_t* message_buf, uint16_t id, char* message){
     message_buf->id = id;
-    //message_buf->data_length = strlen(message);
-    //// message_buf->data[message_buf->data_length] = '\0'; // Terminate string
-    //memcpy(message_buf->data, message, message_buf->data_length + 1); 
-
-    // CAN has max 8 bytes data
     uint8_t len = strlen(message);
-    if (len > 8) len = 8;
+    len = (len < 8) ? len : 8;
 
     message_buf->data_length = len;
     memcpy(message_buf->data, message, len);
-    message_buf->data[len] = '\0'; // Terminate string
 }
 
 void can_print_message(can_message_t *msg){
@@ -74,7 +68,7 @@ void can_print_message(can_message_t *msg){
 void can_send_x_pos(){
     // Sends joystick_x and slider_x over CAN
     pos_t pos = get_pos();
-    uint16_t id = 0x43;
+    uint16_t id = (uint16_t) CAN_ID_JOYSTICK;
     
     // Since we send uints we convert them such that
     // x, y is in [0, 200] (have to convert back on receiving end)
@@ -89,6 +83,15 @@ void can_send_x_pos(){
     can_send_message(&msg, 0);
 }
 
+void can_send_button_pressed(){
+    can_message_t msg = {
+        .id = CAN_ID_JOYSTICK_BUTTON,
+        .data_length = 1,
+        .data = 0xff
+    };
+    can_send_message(&msg, 0);
+}
+
 void can_read_message(can_message_t *msg, uint8_t rx_buffer_n){
     printf("Trying to read buffer RX%u\n", rx_buffer_n);
     spi_master_select_slave(RND_SS);
@@ -100,7 +103,7 @@ void can_read_message(can_message_t *msg, uint8_t rx_buffer_n){
     
     msg->id = ((uint16_t) sidh << 3) | (sidl >> 5);
 
-    // dummy (extened id)
+    // dummy (extended id)
     spi_master_read_byte();
     spi_master_read_byte(); 
 
@@ -111,9 +114,9 @@ void can_read_message(can_message_t *msg, uint8_t rx_buffer_n){
     for (uint8_t i = 0; i < msg->data_length; i++){
         msg->data[i] = spi_master_read_byte();
     }
-    msg->data[msg->data_length] = '\0';
+
     spi_master_deselect_slave(RND_SS); // Flag is automatically cleared when using MCP_READ_RXn
-    uart_transmit_string("Received message:\n");
+    printf("Received message:\r\n");
     can_print_message(msg);
 }
 
@@ -125,7 +128,7 @@ ISR(INT1_vect){
 void can_process_interrupt(){
     if (!CAN_INTERRUPT_FLAG) return;
 
-    uart_transmit_string("ISR called!\n");
+    printf("ISR called!\r\n");
     uint8_t canintf = mcp2515_read(MCP_CANINTF);
     //printf("CANINTF: %x\n", canintf);
 
@@ -134,7 +137,7 @@ void can_process_interrupt(){
         can_message_t msg;
         can_read_message(&msg, 0);
         //printf("Message in RX%u:\n", 0);
-        uart_transmit_string("Received..\n");
+        printf("Received:\r\n");
         can_print_message(&msg);
         mcp2515_bit_modify(MCP_CANINTF, (MCP_RX0IF), 0);
     }

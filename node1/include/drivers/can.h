@@ -8,7 +8,13 @@
 #include "drivers/uart.h"
 #include "drivers/joystick.h"
 #include <stdio.h>
+#include <stdint.h>
 /////////////////////////////////////////////
+
+#define CAN_ID_IR 0x2a
+#define CAN_ID_JOYSTICK_BUTTON 0x31
+#define CAN_ID_JOYSTICK 0x43
+#define CAN_ID_SOLENOID 0x45
 
 typedef struct{
     uint16_t id;
@@ -26,6 +32,7 @@ void can_print_message(can_message_t* msg);
 void can_read_message(can_message_t *msg, uint8_t rx_buffer_n);
 void can_process_interrupt();
 void can_send_x_pos();
+void can_send_button_pressed();
 
 /////////////////////////////////////////////
 #endif

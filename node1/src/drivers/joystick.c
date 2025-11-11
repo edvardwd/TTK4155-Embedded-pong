@@ -82,3 +82,12 @@ void joystick_print_dir(joystick_dir_t dir) {
 
     printf("\n");
 }
+
+
+uint8_t joystick_get_button_pressed(){
+    static uint8_t prev_state = 0;
+    uint8_t state = (PINE &= ~(1 << JOYSTICK_BUTTON));
+    uint8_t btn_pressed = (state && prev_state != state);
+    prev_state = state;
+    return btn_pressed;
+}

@@ -30,6 +30,10 @@ int main() {
         can_send_x_pos();
         _delay_ms(1);
 
+        if (joystick_get_button_pressed()){
+            printf("Button pressed\r\n");
+            can_send_button_pressed();
+        }
         // can_send_message(&msg, 0);
     }
 

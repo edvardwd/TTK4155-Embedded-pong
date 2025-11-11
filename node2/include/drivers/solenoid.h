@@ -1,10 +1,13 @@
 #ifndef SOLENOID_H
 #define SOLENOID_H
 
+#include "sam3x8e.h"
+
+#define SOLENOID_PIN PIO_PA16 // A0 on Arduino 
 
 
-
-
+void solenoid_init();
+void solenoid_trigger();
 
 
 #endif

@@ -14,11 +14,11 @@ void motor_set_direction(motor_dir_t dir){
 
 void motor_set_duty_cycle_and_dir(int32_t slider_x){
   int32_t target_pos = min(-ENCODER_MIN, ENCODER_MAX) * slider_x / 100;
-  printf("TARGET: %d \r\n", target_pos);
+  // printf("TARGET: %d \r\n", target_pos);
   int32_t curr_pos = encoder_get_motor_position();
   int32_t error = target_pos - curr_pos;
   int32_t u = motor_pid(error);
- motor_dir_t dir = curr_pos < target_pos ? REVERSE : FORWARD;
+  motor_dir_t dir = curr_pos < target_pos ? REVERSE : FORWARD;
  
  
   motor_set_direction(dir);
@@ -29,14 +29,12 @@ void motor_set_duty_cycle_and_dir(int32_t slider_x){
 int32_t motor_pid(int32_t error){
   static int32_t ERROR = 0;
   ERROR += error;
-  // if (ERROR > 5000) ERROR = 5000;      // anti-windup
-  // if (ERROR < -5000) ERROR = -5000;
 
-  ERROR = (ERROR < -5000) ? -5000 : (ERROR > 5000) ? 5000 : ERROR;
+  ERROR = (ERROR < -5000) ? -5000 : (ERROR > 5000) ? 5000 : ERROR; // Anti windup
   
   int32_t u = (int32_t) (K_P * abs(error) + PERIOD * K_I  * abs(ERROR));
-  printf("ERROR: %d \n\r", ERROR);
-  printf("INPUT: %d \r\n", u);
+  // printf("ERROR: %d \n\r", ERROR);
+  // printf("U: %d \r\n", u);
   return u;
 }
 

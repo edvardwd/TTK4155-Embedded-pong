@@ -45,6 +45,7 @@ pos_t get_pos();
 int8_t map_to_percent(uint8_t raw, uint8_t min, uint8_t center, uint8_t max);
 int8_t clip_value(int8_t val, int8_t min, int8_t max);
 joystick_dir_t joystick_get_dir();
+uint8_t joystick_get_button_pressed();
 void joystick_print_dir(joystick_dir_t dir);
 
 /////////////////////////////////////////////

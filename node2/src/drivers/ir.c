@@ -28,7 +28,7 @@ uint16_t ir_read(){
 uint8_t ir_detect_crossing(){
     // Returns 1 if IR detects a crossing, else 0
     
-    static uint16_t prev_ir_val = 1800; // approx value for no IR block
+    static uint16_t prev_ir_val = 3000; // approx value for no IR block
     uint16_t ir_val = ir_read();
     
     uint8_t ret_val = 0;

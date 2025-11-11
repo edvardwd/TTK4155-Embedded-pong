@@ -8,6 +8,7 @@
 #include "drivers/ir.h"
 #include "drivers/encoder.h"
 #include "drivers/motor.h"
+#include "drivers/solenoid.h"
 
 /*
  * Remember to update the Makefile with the (relative) path to the uart.c file.
@@ -20,6 +21,13 @@
  */
 //#include "../path_to/uart.h"
 
+// TODO: fix ADC channels in comments
+
+#define CAN_ID_IR 0x2a
+#define CAN_ID_JOYSTICK_BUTTON 0x31
+#define CAN_ID_JOYSTICK 0x43
+#define CAN_ID_SOLENOID 0x45
+
 
 int main(){
     SystemInit();
@@ -30,24 +38,9 @@ int main(){
     uart_init(F_CPU, 9600);
     printf("Node 2 starting...\n\r");
 
-    // Config CAN_BR
-    // can_init((CanInit){.brp = 6, .propag = 2, .phase1 = 11, .phase2 = 7, .sjw = 1, .smp = 0}, 1); // 500kbit/s according to Chat
-    
-    //can_message_t msg;
-    //can_create_message(&msg, 0x01, "Hello");
-    
-    // Send meldingen
-    //can_send_message(&msg);
-    
-    //uart_transmit_string("Message sent: 'Hello'\n");
-    
-    // Bit-timing matching MCP2515 (≈ 250 kbit/s)
-    // can_init((CanInit){.brp = 6, .phase1 = 12, .phase2 = 4, .propag = 4, .sjw=3, .smp=0}, 0);
-    
-    //can_init((CanInit){.brp = 20, .phase1 = 7, .phase2 = 4, .propag = 1, .sjw=2, .smp=0}, 0); //THIS now matches node1
     uint32_t can_br =
         (20  << 16) |   // BRP
-        (1  << 8)  |   // PROPAG
+        (1  << 8)  |   // PROPAG>
         (7 << 4)  |   // PHASE1
         (4 << 0)  |   // PHASE2./s
         (2  << 12) |   // SJW
@@ -57,39 +50,38 @@ int main(){
     pwm_init();
     ir_init();
     encoder_init();
-    //printf("HERE");
+    
     motor_init();
     encoder_calibrate();
+    solenoid_init();
 
     delay_ms(1000);
     printf("MIN: %d, MID: %d, MAX: %d\r\n", ENCODER_MIN, ENCODER_MID, ENCODER_MAX);
-    // uint32_t sleep = 1000000;
-    // while (sleep--);
-    //if(!can_init_def_tx_rx_mb(can_br)){
-    //printf("CAN initialized (Normal mode)\n");
+
 
     CAN_MESSAGE msg;
     uint32_t last_time = time_now();
     while (1){
       uint32_t now_time = time_now();
       float t = (float) totalSeconds(now_time - last_time);
-
+      printf("ADC: %u\r\n", ir_read());
       // printf("Message recieved");
       if (!can_receive(&msg, 0)){
-        if (msg.id == 0x43){
-            int32_t joystick_x = (int32_t) (msg.data[1]) - 100;
-            int32_t slider_x = (int32_t) (msg.data[0]) - 100;
+        if (msg.id == CAN_ID_JOYSTICK){
+            int32_t joystick_x = (int32_t) (msg.data[0]) - 100;
+            int32_t slider_x = (int32_t) (msg.data[1]) - 100;
             if (t >= PERIOD) {       // 0.01 s = 10 ms
               motor_set_duty_cycle_and_dir(slider_x);
               last_time = now_time;
             }
             servo_set_duty_cycle(joystick_x);
-            printf("Slider_x: %d\r\n", slider_x);
+            // printf("Slider_x: %d\r\n", slider_x);
           }
           
+        if (msg.id == CAN_ID_JOYSTICK_BUTTON){
+          solenoid_trigger();
         }
-    if (ir_detect_crossing()) printf("(Animal) Crossing detected!\r\n");
-    //printf("Positon %d\r\n", encoder_get_motor_position());
+        }
   }
   return 0;
 }
