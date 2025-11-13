@@ -13,11 +13,6 @@
 
 // TODO: fix ADC channels in comments
 
-#define CAN_ID_IR 0x2a
-#define CAN_ID_JOYSTICK_BUTTON 0x31
-#define CAN_ID_JOYSTICK 0x43
-#define CAN_ID_SOLENOID 0x45
-
 int main(){
     SystemInit();
     WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
@@ -51,11 +46,6 @@ int main(){
     CAN_MESSAGE msg;
     uint32_t last_time = time_now();
     while (1){
-        uint32_t ecr = CAN0->CAN_ECR;  // use CAN1->CAN_ECR if you’re using CAN1
-        uint8_t tec = (ecr >> 16) & 0xFF;
-        uint8_t rec = ecr & 0xFF;
-
-        // printf("CAN Error Counters -> TX: %u, RX: %u\r\n", tec, rec);
 
         uint32_t now_time = time_now();
         float t = (float) totalSeconds(now_time - last_time);

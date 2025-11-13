@@ -87,7 +87,16 @@ void can_send_button_pressed(){
     can_message_t msg = {
         .id = CAN_ID_JOYSTICK_BUTTON,
         .data_length = 1,
-        .data = 0xff
+        .data = {0xff}
+    };
+    can_send_message(&msg, 0);
+}
+
+void can_send_calibrate_message(){
+    can_message_t msg = {
+        .id = CAN_ID_CALIBRATE,
+        .data_length = 0,
+        .data = {0xff}
     };
     can_send_message(&msg, 0);
 }

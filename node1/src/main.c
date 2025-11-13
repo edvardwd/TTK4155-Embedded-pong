@@ -42,6 +42,8 @@ int main() {
     menu_t* menu = init_menu();
     oled_print_menu(menu);
 
+    can_send_button_pressed();
+
     while (1){
         navigate_menu(menu);
 

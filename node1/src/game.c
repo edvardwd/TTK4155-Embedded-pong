@@ -37,6 +37,9 @@ void game_play(){
     oled_clear_disp();
     oled_print(0, 0, "Game underway");
 
+    can_send_calibrate_message();
+    
+
     can_message_t msg;
     can_create_message(&msg, CAN_ID_NOP, "");
 
@@ -54,7 +57,10 @@ void game_play(){
 
         // Send states to node 2
         can_send_x_pos();
-        if (joystick_get_button_pressed()) can_send_button_pressed();
+        if (joystick_get_button_pressed()){
+            printf("Button pressed\r\n");
+            can_send_button_pressed();
+        }
 
         
         // Polling

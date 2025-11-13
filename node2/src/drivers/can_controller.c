@@ -212,3 +212,22 @@ void can_print_message(CAN_MESSAGE *msg){
 }
 
 
+
+void can_send_calibration_done(){
+	CAN_MESSAGE msg = {
+		.id = CAN_ID_CALIBRATE,
+		.data_length = 0,
+		.data = {0xff}
+	};
+	can_send(&msg, 0);
+}
+
+
+void can_send_crossing_detected(){
+	CAN_MESSAGE msg = {
+		.id = CAN_ID_IR,
+		.data_length = 0,
+		.data = {0xff}
+	};
+	can_send(&msg, 0);
+}
