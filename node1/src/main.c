@@ -41,14 +41,14 @@ int main() {
 
     menu_t* menu = init_menu();
     oled_print_menu(menu);
-
-    can_send_button_pressed();
-
+    can_message_t* msg;
     while (1){
         navigate_menu(menu);
+        
 
+        can_process_interrupt(&msg);
         _delay_ms(10);
-
+ 
     }
     return 0;
 }

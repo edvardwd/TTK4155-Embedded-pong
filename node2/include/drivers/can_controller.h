@@ -15,12 +15,12 @@
 #include <stdint.h>
 
 #define CAN_ID_NOP 0x00
-#define CAN_ID_ERROR 0x01
 #define CAN_ID_CALIBRATE 0x0a
 #define CAN_ID_IR 0x2a
 #define CAN_ID_JOYSTICK_BUTTON 0x31
 #define CAN_ID_JOYSTICK 0x43
 #define CAN_ID_SOLENOID 0x45
+#define CAN_ID_ERROR 0x49
 
 
 typedef struct can_message_t
@@ -37,8 +37,7 @@ uint8_t can_send(CAN_MESSAGE* can_msg, uint8_t mailbox_id);
 uint8_t can_receive(CAN_MESSAGE* can_msg, uint8_t mailbox_id);
 void can_print_message(CAN_MESSAGE *msg);
 
-void can_send_calibration_done();
-void can_send_crossing_detected();
+void can_send_id(uint16_t id);
 
 
 #endif /* CAN_CONTROLLER_H_ */

@@ -213,21 +213,13 @@ void can_print_message(CAN_MESSAGE *msg){
 
 
 
-void can_send_calibration_done(){
+void can_send_id(uint16_t id){
 	CAN_MESSAGE msg = {
-		.id = CAN_ID_CALIBRATE,
+		.id = id,
 		.data_length = 0,
 		.data = {0xff}
 	};
-	can_send(&msg, 0);
-}
-
-
-void can_send_crossing_detected(){
-	CAN_MESSAGE msg = {
-		.id = CAN_ID_IR,
-		.data_length = 0,
-		.data = {0xff}
-	};
-	can_send(&msg, 0);
+	can_send(&msg, 0); // Wait till sent
+	
+	
 }

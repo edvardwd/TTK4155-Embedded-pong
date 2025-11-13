@@ -23,7 +23,6 @@ void mcp2515_write(uint8_t address, uint8_t data){
 }
 void mcp2515_init(){
     mcp2515_reset();
-    mcp2515_bit_modify(MCP_CANINTF, 0xff, 0x00); // clear all old flags
     _delay_ms(100);
 
     uint8_t value = mcp2515_read(MCP_CANSTAT);
@@ -51,8 +50,7 @@ void mcp2515_init(){
     PORTD |= (1 << PD3); // enable pull-up resistor
 
     // Trigger interrupt on falling edge (INT line goes low when active)
-    MCUCR |= (1 << ISC11);
-    MCUCR &= ~(1 << ISC10);
+    MCUCR &= ~((1 << ISC11) | (1 << ISC10));
 
     _delay_ms(1);
 }

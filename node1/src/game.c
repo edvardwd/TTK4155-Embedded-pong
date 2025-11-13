@@ -31,24 +31,35 @@ void game_over_message(){
 }
 
 void game_play(){
+    can_message_t msg;
+
     game_intro_message();
     _delay_ms(3000); // 3s to read
 
     oled_clear_disp();
+    oled_print(0, 0, "Calibrating..");
+
+    can_send_id(CAN_ID_CALIBRATE);
+    uint8_t calibrated = 0;
+
+
+    while (!calibrated){
+        //printf("Searchinf for answer...\n\r");
+        can_process_interrupt(&msg);
+        _delay_ms(50);
+        if (msg.id == CAN_ID_CALIBRATE) calibrated = 1;
+    }
+
+    oled_clear_disp();
     oled_print(0, 0, "Game underway");
 
-    can_send_calibrate_message();
-    
-
-    can_message_t msg;
     can_create_message(&msg, CAN_ID_NOP, "");
-
     uint8_t alive = 1;
 
     while(alive){
         _delay_ms(10);
 
-        if (CAN_INTERRUPT_FLAG) can_process_interrupt(&msg);
+        can_process_interrupt(&msg);
 
         // Debug
         // printf("MESSAGE:\r\n");
@@ -59,11 +70,10 @@ void game_play(){
         can_send_x_pos();
         if (joystick_get_button_pressed()){
             printf("Button pressed\r\n");
-            can_send_button_pressed();
+            can_send_id(CAN_ID_JOYSTICK_BUTTON);
         }
 
-        
-        // Polling
+    
         // can_read_message(&msg, 0);
         uint16_t id = msg.id;
         if (id == CAN_ID_NOP) continue;

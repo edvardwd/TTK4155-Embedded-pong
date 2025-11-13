@@ -48,6 +48,7 @@ void encoder_wait_for_still(){
 }
 
 void encoder_calibrate(){
+    
     printf("Calibratin.... \r\n");
     encoder_reset();
     delay_ms(1000);
@@ -82,4 +83,5 @@ void encoder_calibrate(){
     ENCODER_MID = 0;
 
     printf("Calibration done!\r\n");
+    return;
 }
