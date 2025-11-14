@@ -31,6 +31,5 @@ uint8_t ir_detect_crossing(){
     static uint8_t detected_counter = 0;
     uint16_t ir_val = ir_read();
     detected_counter = (ir_val >= IR_ADC_THRESHOLD) ? 0 : ((detected_counter == 255) ? 6 : detected_counter + 1);
-    printf("ADC: %u\r\n", ir_val);
     return detected_counter == 5; // Check if the IR has detected 5 signals in a row
 }

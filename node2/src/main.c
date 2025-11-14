@@ -20,6 +20,7 @@ void game_loop(){
     // uint8_t sent = 0;
     // uint32_t new_time = time_now();
     // delay_ms(5);
+    uint8_t n_lives = 3;
      
     CAN_MESSAGE msg = {
         .id = CAN_ID_NOP,
@@ -30,9 +31,6 @@ void game_loop(){
     
     int32_t joystick_x = 0;
     int32_t pad_x = 0;
-    printf("Message sent!\n\r");
-    
-
     while (1) {
         uint32_t now_time = time_now(); // TODO: revisit
         float t = (float) totalSeconds(now_time - last_time);
@@ -50,12 +48,17 @@ void game_loop(){
             
         if (msg.id == CAN_ID_JOYSTICK_BUTTON) solenoid_trigger();
 
-        if (ir_detect_crossing()) can_send_id(CAN_ID_IR);
-
+        if (ir_detect_crossing()){
+            msg.id = CAN_ID_IR;
+            msg.data_length = 1;
+            msg.data[0] = --n_lives;
+            can_send(&msg, 0);
+        
+            while(msg.id != CAN_ID_JOYSTICK_BUTTON) can_interrupt_process(&msg); // Wait till continue signal is sent
+        }
         if (t >= PERIOD) {       // 0.01 s = 10 ms
             motor_set_duty_cycle_and_dir(pad_x);
-            last_time = now_time;
-        }
+            last_time = now_time;}
     }
 }
 

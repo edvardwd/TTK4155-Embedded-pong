@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 #define IR_PIN PIO_PA2 // ADC CH0, pin A7 on Arduino
-#define IR_ADC_THRESHOLD 100 // Empiric value
+#define IR_ADC_THRESHOLD 2000 // Empiric value
 
 
 

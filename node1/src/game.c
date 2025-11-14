@@ -20,8 +20,8 @@ void game_intro_message(){
 void game_over_message(){
     oled_clear_disp();
     unsigned char* lines[2] = {
-        "Game over!",
-        "Score: "
+        "Game over!"
+        ""
     };
     
     for (uint8_t i = 0; i < 2; i++){
@@ -44,7 +44,6 @@ void game_play(){
 
 
     while (!calibrated){
-        printf("Searchinf for answer...\n\r");
         can_process_interrupt(&msg);
         //_delay_ms(50);
         if (msg.id == CAN_ID_CALIBRATE) calibrated = 1;
@@ -52,20 +51,14 @@ void game_play(){
 
     oled_clear_disp();
     oled_print(0, 0, "Game underway");
+    oled_print(8, 0, "Lives remaining: 3");
 
     can_create_message(&msg, CAN_ID_NOP, "");
     uint8_t alive = 1;
 
     while(alive){
         _delay_ms(10);
-
         can_process_interrupt(&msg);
-
-        // Debug
-        // printf("MESSAGE:\r\n");
-        // can_print_message(&msg);
-        // printf("\r\n");
-
         // Send states to node 2
         can_send_x_pos();
         if (joystick_get_button_pressed()){
@@ -78,12 +71,24 @@ void game_play(){
         uint16_t id = msg.id;
         if (id == CAN_ID_NOP) continue;
         if (id == CAN_ID_ERROR) can_print_message(&msg);
-        else if (id == CAN_ID_IR) alive = 0;
+        else if (id == CAN_ID_IR){
+            uint8_t lives_remaining = msg.data[0];
+            char buf[32];
+            sprintf(buf, "Lives remaining: %u", lives_remaining);
+            oled_clear_line(8);
+            oled_print(8, 0, buf);
+            oled_print(8 * 2, 0, "To continue:");
+            oled_print(8 * 3, 0, "Remove ball");
+            oled_print(8* 4, 0, "And press button");
+            while(!joystick_get_button_pressed());
+            can_send_id(CAN_ID_JOYSTICK_BUTTON);
+            for (uint8_t i = 2; i <= 4; i++)oled_clear_line(8*i);
+            if(lives_remaining == 0){ alive = 0; printf("Alive = 0\r\n");}
+        }             
         else {
             printf("This should in theory be impossible.\r\n");
             return;
         }
     }
-
     game_over_message();
 }
