@@ -46,7 +46,7 @@ uint8_t can_init(uint32_t can_br, uint8_t num_tx_mb, uint8_t num_rx_mb)
 {
 	
 	//Make sure num_rx_mb and num_tx_mb is valid
-	if(num_rx_mb > 8 | num_tx_mb > 8 | num_rx_mb + num_tx_mb > 8)
+	if(num_rx_mb > 8 || num_tx_mb > 8 || num_rx_mb + num_tx_mb > 8)
 	{
 		return 1; //Too many mailboxes is configured
 	}
@@ -87,7 +87,7 @@ uint8_t can_init(uint32_t can_br, uint8_t num_tx_mb, uint8_t num_rx_mb)
 	uint32_t can_ier = 0;
 
 	/* Configure receive mailboxes */
-	for (int n = num_tx_mb; n <= num_rx_mb + num_tx_mb; n++)  //Simply one mailbox setup for all messages. You might want to apply filter for them.
+	for (int n = num_tx_mb; n < num_rx_mb + num_tx_mb; n++)  //Simply one mailbox setup for all messages. You might want to apply filter for them.
 	{
 		CAN0->CAN_MB[n].CAN_MAM = 0; //Accept all messages
 		CAN0->CAN_MB[n].CAN_MID = CAN_MID_MIDE;
@@ -219,7 +219,6 @@ void can_send_id(uint16_t id){
 		.data_length = 0,
 		.data = {0xff}
 	};
-	can_send(&msg, 0); // Wait till sent
-	
-	
+
+	while(can_send(&msg, 0)); printf("Trying to send \n\r"); // Wait till sent
 }

@@ -13,6 +13,7 @@
 #define CAN_CONTROLLER_H_
 
 #include <stdint.h>
+#include "can_controller.h"
 
 #define CAN_ID_NOP 0x00
 #define CAN_ID_CALIBRATE 0x0a

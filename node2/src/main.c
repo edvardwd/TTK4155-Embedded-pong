@@ -9,6 +9,7 @@
 #include "drivers/encoder.h"
 #include "drivers/motor.h"
 #include "drivers/solenoid.h"
+#include "drivers/can_interrupt.h"
 
 
 // TODO: fix ADC channels in comments
@@ -18,48 +19,38 @@ void game_loop(){
     // uint32_t time = time_now();
     // uint8_t sent = 0;
     // uint32_t new_time = time_now();
-    printf("inside game\n\r");
-    delay_ms(5);
-    
-    CAN_MESSAGE msg;
+    // delay_ms(5);
+     
+    CAN_MESSAGE msg = {
+        .id = CAN_ID_NOP,
+        .data_length = 0,
+        .data = {}
+    };
     uint32_t last_time = time_now();
     
     int32_t joystick_x = 0;
     int32_t pad_x = 0;
-    can_send_id(CAN_ID_CALIBRATE);
-    
     printf("Message sent!\n\r");
-    printf("RX0: %d  RX1: %d  RX2: %d\r\n",
-       can_receive(&msg, 0),
-       can_receive(&msg, 1),
-       can_receive(&msg, 2));
+    
+
     while (1) {
-        printf("Loop started\n\r");
         uint32_t now_time = time_now(); // TODO: revisit
         float t = (float) totalSeconds(now_time - last_time);
-        printf("after time\n\r");
-        if (!can_receive(&msg, 0)){
-            printf("ID is: %u", msg.id);
-            if (msg.id == CAN_ID_JOYSTICK){
-                joystick_x = (int32_t) (msg.data[0]) - 100;
-                pad_x = (int32_t) (msg.data[1]) - 100;
-            
-                servo_set_duty_cycle(joystick_x);
-                // printf("pad_x: %d\r\n", pad_x);
-            }
-            
-              
-            if (msg.id == CAN_ID_JOYSTICK_BUTTON){
-                printf("Button pressed\r\n");
-                solenoid_trigger();
-            }
-        }
+        
+        can_interrupt_process(&msg);
 
-        if (ir_detect_crossing()){
-            printf("(Animal) crossing detected!\r\n");
-            can_send_id(CAN_ID_IR);
-            // return;
+        if (msg.id == CAN_ID_JOYSTICK){
+            joystick_x = (int32_t) (msg.data[0]) - 100;
+            pad_x = (int32_t) (msg.data[1]) - 100;
+        
+            servo_set_duty_cycle(joystick_x);
+            // printf("pad_x: %d\r\n", pad_x);
         }
+        
+            
+        if (msg.id == CAN_ID_JOYSTICK_BUTTON) solenoid_trigger();
+
+        if (ir_detect_crossing()) can_send_id(CAN_ID_IR);
 
         if (t >= PERIOD) {       // 0.01 s = 10 ms
             motor_set_duty_cycle_and_dir(pad_x);
@@ -121,22 +112,17 @@ int main(){
     CAN_MESSAGE msg = {
         .id = CAN_ID_NOP,
         .data_length = 0,
-        .data = {0xff}
+        .data = {}
     };
+    // can_send_id(CAN_ID_CALIBRATE);
+    // delay_ms(25);
 
-    //delay_ms(25);
     while (1){    
-        if(!can_receive(&msg, 0)){
-            if (msg.id == CAN_ID_CALIBRATE){
-            printf("inside if \n\r");
+        can_interrupt_process(&msg);
+        if (msg.id == CAN_ID_CALIBRATE){
             encoder_calibrate();
-            
-            
-            //msg.id = CAN_ID_NOP;
-            printf("Entering game \n\r");
+            can_send_id(CAN_ID_CALIBRATE);
             game_loop();
-            }
-
         }
     }
     return 0;

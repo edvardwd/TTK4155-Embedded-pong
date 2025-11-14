@@ -34,7 +34,7 @@ void game_play(){
     can_message_t msg;
 
     game_intro_message();
-    _delay_ms(3000); // 3s to read
+    _delay_ms(500); // 3s to read
 
     oled_clear_disp();
     oled_print(0, 0, "Calibrating..");
@@ -44,9 +44,9 @@ void game_play(){
 
 
     while (!calibrated){
-        //printf("Searchinf for answer...\n\r");
+        printf("Searchinf for answer...\n\r");
         can_process_interrupt(&msg);
-        _delay_ms(50);
+        //_delay_ms(50);
         if (msg.id == CAN_ID_CALIBRATE) calibrated = 1;
     }
 
