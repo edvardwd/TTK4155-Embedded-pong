@@ -6,6 +6,7 @@
 #include "drivers/motor.h"
 #include "drivers/solenoid.h"
 #include "drivers/ir.h"
+#include "drivers/servo.h"
 /////////////////////////////////////////////
 
 typedef enum {

@@ -27,7 +27,7 @@ void game_loop(){
 
     while (n_lives) {
         // Process joystick and pad in all states
-        uint32_t now_time = time_now(); // TODO: revisit
+        uint32_t now_time = time_now();
         float t = (float) totalSeconds(now_time - last_time);
         
         can_interrupt_process(&msg);
@@ -43,8 +43,9 @@ void game_loop(){
         {
         case GAME_STATE_PLAYING:
             if (msg.id == CAN_ID_JOYSTICK_BUTTON) solenoid_trigger();
-            
+
             if (ir_detect_crossing()){
+
                 // Update state and score
                 state = (n_lives) ? GAME_STATE_PAUSED : GAME_STATE_GAME_OVER;
                 uint32_t game_pause_time = time_now();
@@ -56,7 +57,10 @@ void game_loop(){
                 msg.data[0] = --n_lives;
                 msg.data[1] = (uint8_t) score & 0xff;
                 can_send(&msg, 0);
-                
+
+                // Move to middle and center servo
+                motor_go_to_pos(0);
+                servo_set_duty_cycle(0);
             }
             break;
             
