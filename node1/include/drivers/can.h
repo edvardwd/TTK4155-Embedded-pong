@@ -11,14 +11,6 @@
 #include <stdint.h>
 /////////////////////////////////////////////
 
-// #define CAN_ID_NOP 0x00
-// #define CAN_ID_CALIBRATE 0x0a
-// #define CAN_ID_IR 0x2a
-// #define CAN_ID_JOYSTICK_BUTTON 0x31
-// #define CAN_ID_JOYSTICK 0x43
-// #define CAN_ID_SOLENOID 0x45
-// #define CAN_ID_ERROR 0x49
-
 typedef enum {
 	CAN_ID_NOP =  0x00,
 	CAN_ID_CALIBRATE = 0x0a,

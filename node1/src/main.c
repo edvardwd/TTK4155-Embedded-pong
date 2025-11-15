@@ -27,27 +27,12 @@ int main() {
     can_init();
 
 
-    // while(1){
-    //     can_send_x_pos();
-    //     _delay_ms(1);
-
-    //     uint8_t btn_pressed = joystick_get_button_pressed();
-    //     if (btn_pressed){
-    //         // printf("Button pressed\r\n");
-    //         can_send_button_pressed();
-    //     }
-    //     // can_send_message(&msg, 0);
-    // }
 
     menu_t* menu = init_menu();
     oled_print_menu(menu);
     //can_message_t* msg;
     while (1){
         navigate_menu(menu);
-        
-
-        //can_process_interrupt(&msg);
-        //_delay_ms(10);
  
     }
     return 0;

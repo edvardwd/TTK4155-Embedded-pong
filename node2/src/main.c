@@ -10,60 +10,10 @@
 #include "drivers/motor.h"
 #include "drivers/solenoid.h"
 #include "drivers/can_interrupt.h"
+#include "game.h"
 
 
 // TODO: fix ADC channels in comments
-
-
-void game_loop(){
-    // uint32_t time = time_now();
-    // uint8_t sent = 0;
-    // uint32_t new_time = time_now();
-    // delay_ms(5);
-    uint8_t n_lives = 3;
-     
-    CAN_MESSAGE msg = {
-        .id = CAN_ID_NOP,
-        .data_length = 0,
-        .data = {}
-    };
-    uint32_t last_time = time_now();
-    
-    int32_t joystick_x = 0;
-    int32_t pad_x = 0;
-    while (1) {
-        uint32_t now_time = time_now(); // TODO: revisit
-        float t = (float) totalSeconds(now_time - last_time);
-        
-        printf("ADC %u\r\n", ir_read());
-        can_interrupt_process(&msg);
-
-        if (msg.id == CAN_ID_JOYSTICK){
-            joystick_x = (int32_t) (msg.data[0]) - 100;
-            pad_x = (int32_t) (msg.data[1]) - 100;
-        
-            servo_set_duty_cycle(joystick_x);
-            // printf("pad_x: %d\r\n", pad_x);
-        }
-        
-            
-        if (msg.id == CAN_ID_JOYSTICK_BUTTON){ 
-            printf("Button clicked\r\n");
-            solenoid_trigger();}
-
-        if (ir_detect_crossing()){
-            msg.id = CAN_ID_IR;
-            msg.data_length = 1;
-            msg.data[0] = --n_lives;
-            can_send(&msg, 0);
-        
-            while(msg.id != CAN_ID_JOYSTICK_BUTTON) can_interrupt_process(&msg); // Wait till continue signal is sent
-        }
-        if (t >= PERIOD) {       // 0.01 s = 10 ms
-            motor_set_duty_cycle_and_dir(pad_x);
-            last_time = now_time;}
-    }
-}
 
 
 
@@ -90,46 +40,19 @@ int main(){
     encoder_init();
 
     motor_init();
-    // encoder_calibrate();
     solenoid_init();
-    // while(1){
-    //     can_send_id(CAN_ID_CALIBRATE);
-    // }
-    // can_send_id(CAN_ID_CALIBRATE);
-    //    while (1){
-    //     uint32_t new_time = time_now();
-    //     }
 
-    // uint32_t prev_time = time_now();
-    // while (1){
-    //     uint32_t new_time = time_now();
-
-    //     if (1){
-    //         can_send_id(CAN_ID_NOP);
-    //         printf("Message sent!\r\n");
-    //     }
-    //     prev_time = new_time;
-    // }
-
-    // delay_ms(1000);
-    // printf("MIN: %d, MID: %d, MAX: %d\r\n", ENCODER_MIN, ENCODER_MID, ENCODER_MAX);
-
-
-    // while (1) printf("ADC: %u\r\n", ir_read());
 
     CAN_MESSAGE msg = {
         .id = CAN_ID_NOP,
         .data_length = 0,
         .data = {}
     };
-    // can_send_id(CAN_ID_CALIBRATE);
-    // delay_ms(25);
+
 
     while (1){    
         can_interrupt_process(&msg);
         if (msg.id == CAN_ID_CALIBRATE){
-            encoder_calibrate();
-            can_send_id(CAN_ID_CALIBRATE);
             game_loop();
         }
     }
