@@ -15,13 +15,23 @@
 #include <stdint.h>
 #include "can_controller.h"
 
-#define CAN_ID_NOP 0x00
-#define CAN_ID_CALIBRATE 0x0a
-#define CAN_ID_IR 0x2a
-#define CAN_ID_JOYSTICK_BUTTON 0x31
-#define CAN_ID_JOYSTICK 0x43
-#define CAN_ID_SOLENOID 0x45
-#define CAN_ID_ERROR 0x49
+// #define CAN_ID_NOP 0x00
+// #define CAN_ID_CALIBRATE 0x0a
+// #define CAN_ID_IR 0x2a
+// #define CAN_ID_JOYSTICK_BUTTON 0x31
+// #define CAN_ID_JOYSTICK 0x43
+// #define CAN_ID_SOLENOID 0x45
+// #define CAN_ID_ERROR 0x49
+
+typedef enum {
+	CAN_ID_NOP =  0x00,
+	CAN_ID_CALIBRATE = 0x0a,
+	CAN_ID_IR = 0x2a,
+	CAN_ID_JOYSTICK_BUTTON = 0x31,
+	CAN_ID_JOYSTICK = 0x43,
+	CAN_ID_SOLENOID = 0x45,
+	CAN_ID_ERROR = 0x49
+} can_id_t;
 
 
 typedef struct can_message_t
@@ -38,7 +48,7 @@ uint8_t can_send(CAN_MESSAGE* can_msg, uint8_t mailbox_id);
 uint8_t can_receive(CAN_MESSAGE* can_msg, uint8_t mailbox_id);
 void can_print_message(CAN_MESSAGE *msg);
 
-void can_send_id(uint16_t id);
+void can_send_id(can_id_t id);
 
 
 #endif /* CAN_CONTROLLER_H_ */

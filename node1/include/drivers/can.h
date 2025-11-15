@@ -11,13 +11,23 @@
 #include <stdint.h>
 /////////////////////////////////////////////
 
-#define CAN_ID_NOP 0x00
-#define CAN_ID_CALIBRATE 0x0a
-#define CAN_ID_IR 0x2a
-#define CAN_ID_JOYSTICK_BUTTON 0x31
-#define CAN_ID_JOYSTICK 0x43
-#define CAN_ID_SOLENOID 0x45
-#define CAN_ID_ERROR 0x49
+// #define CAN_ID_NOP 0x00
+// #define CAN_ID_CALIBRATE 0x0a
+// #define CAN_ID_IR 0x2a
+// #define CAN_ID_JOYSTICK_BUTTON 0x31
+// #define CAN_ID_JOYSTICK 0x43
+// #define CAN_ID_SOLENOID 0x45
+// #define CAN_ID_ERROR 0x49
+
+typedef enum {
+	CAN_ID_NOP =  0x00,
+	CAN_ID_CALIBRATE = 0x0a,
+	CAN_ID_IR = 0x2a,
+	CAN_ID_JOYSTICK_BUTTON = 0x31,
+	CAN_ID_JOYSTICK = 0x43,
+	CAN_ID_SOLENOID = 0x45,
+	CAN_ID_ERROR = 0x49
+} can_id_t;
 
 typedef struct{
     uint16_t id;
@@ -35,7 +45,7 @@ void can_print_message(can_message_t* msg);
 void can_read_message(can_message_t *msg, uint8_t rx_buffer_n);
 void can_process_interrupt(can_message_t* msg_buf);
 void can_send_x_pos();
-void can_send_id(uint16_t id);
+void can_send_id(can_id_t id);
 
 /////////////////////////////////////////////
 #endif

@@ -35,6 +35,7 @@ void game_loop(){
         uint32_t now_time = time_now(); // TODO: revisit
         float t = (float) totalSeconds(now_time - last_time);
         
+        printf("ADC %u\r\n", ir_read());
         can_interrupt_process(&msg);
 
         if (msg.id == CAN_ID_JOYSTICK){
@@ -46,7 +47,9 @@ void game_loop(){
         }
         
             
-        if (msg.id == CAN_ID_JOYSTICK_BUTTON) solenoid_trigger();
+        if (msg.id == CAN_ID_JOYSTICK_BUTTON){ 
+            printf("Button clicked\r\n");
+            solenoid_trigger();}
 
         if (ir_detect_crossing()){
             msg.id = CAN_ID_IR;
@@ -67,7 +70,7 @@ void game_loop(){
 int main(){
     SystemInit();
     WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
-    CAN0->CAN_IDR = 0xffffffff; //Disable interrupts for debugging
+    // CAN0->CAN_IDR = 0xffffffff; //Disable interrupts for debugging
 
     // Uncomment after including uart above
     uart_init(F_CPU, 9600);
@@ -111,6 +114,8 @@ int main(){
     // delay_ms(1000);
     // printf("MIN: %d, MID: %d, MAX: %d\r\n", ENCODER_MIN, ENCODER_MID, ENCODER_MAX);
 
+
+    // while (1) printf("ADC: %u\r\n", ir_read());
 
     CAN_MESSAGE msg = {
         .id = CAN_ID_NOP,

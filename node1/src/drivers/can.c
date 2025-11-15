@@ -85,7 +85,7 @@ void can_send_x_pos(){
     can_send_message(&msg, 0);
 }
 
-void can_send_id(uint16_t id){
+void can_send_id(can_id_t id){
     // Sends an empty msg with specified id
     can_message_t msg = {
         .id = id,

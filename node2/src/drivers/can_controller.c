@@ -213,7 +213,7 @@ void can_print_message(CAN_MESSAGE *msg){
 
 
 
-void can_send_id(uint16_t id){
+void can_send_id(can_id_t id){
 	CAN_MESSAGE msg = {
 		.id = id,
 		.data_length = 0,
