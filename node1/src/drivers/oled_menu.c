@@ -15,7 +15,7 @@ void oled_menu_circle_action(){
 
 
 
-menu_t* oled_menu_init(void){
+menu_t* oled_menu_init(){
     static uint8_t menu_idx = 0;
     
     // Only create root + 3 main items (no deep submenus)

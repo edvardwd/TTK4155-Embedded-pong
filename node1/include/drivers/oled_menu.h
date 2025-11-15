@@ -14,7 +14,7 @@
 
 typedef void (*menu_func_t)(void);
 
-typedef struct {
+typedef struct menu_t {
     const char *title; //Title for Menu element
     menu_func_t action; //Func to be called. If NULL --> Do nuthing
     struct menu_t *parent;
