@@ -1,4 +1,5 @@
 #include "game.h"
+/////////////////////////////////////////////
 
 void game_loop(){
     static uint8_t calibrated = 0;
@@ -29,7 +30,6 @@ void game_loop(){
         uint32_t now_time = time_now(); // TODO: revisit
         float t = (float) totalSeconds(now_time - last_time);
         
-        // printf("ADC %u\r\n", ir_read());
         can_interrupt_process(&msg);
 
         if (msg.id == CAN_ID_JOYSTICK){
@@ -37,13 +37,13 @@ void game_loop(){
             pad_x = (int32_t) (msg.data[1]) - 100;
         
             servo_set_duty_cycle(joystick_x);
-            // printf("pad_x: %d\r\n", pad_x);
         }
 
         switch (state)
         {
         case GAME_STATE_PLAYING:
             if (msg.id == CAN_ID_JOYSTICK_BUTTON) solenoid_trigger();
+            
             if (ir_detect_crossing()){
                 // Update state and score
                 state = (n_lives) ? GAME_STATE_PAUSED : GAME_STATE_GAME_OVER;
@@ -56,10 +56,10 @@ void game_loop(){
                 msg.data[0] = --n_lives;
                 msg.data[1] = (uint8_t) score & 0xff;
                 can_send(&msg, 0);
-
+                
             }
             break;
-
+            
         case GAME_STATE_PAUSED:
             if (msg.id == CAN_ID_JOYSTICK_BUTTON) state = GAME_STATE_PLAYING;
             break;

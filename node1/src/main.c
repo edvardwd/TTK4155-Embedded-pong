@@ -12,8 +12,7 @@
 /////////////////////////////////////////////
 
 
-
-int main() {
+void init_all(){
     uart_init(UBRR);
     printf("Node 1 starting..\r\n");
     
@@ -25,14 +24,16 @@ int main() {
     oled_init_minimal();
     _delay_ms(200);
     can_init();
+}
 
 
+int main() {
+    init_all();
 
-    menu_t* menu = init_menu();
-    oled_print_menu(menu);
-    //can_message_t* msg;
+    menu_t* menu = oled_menu_init();
+    oled_menu_print(menu);
     while (1){
-        navigate_menu(menu);
+        oled_menu_navigate(menu);
  
     }
     return 0;

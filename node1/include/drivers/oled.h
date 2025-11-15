@@ -17,7 +17,7 @@
 void oled_init();
 void oled_init_minimal();
 void oled_reset();
-void oled_home();
+// void oled_home();
 
 void oled_goto_line(uint8_t line);
 void oled_goto_column(uint8_t column);
@@ -29,7 +29,7 @@ void oled_write_cmd(uint8_t data);
 void oled_write_byte(uint8_t data);
 
 void oled_print(uint8_t line, uint8_t col, const char* msg);
-void oled_set_brightness(uint8_t level);
+// void oled_set_brightness(uint8_t level);
 void oled_print_char(uint8_t line, uint8_t col, char c);
 
 void oled_clear_disp(void);

@@ -11,13 +11,10 @@
 #include "drivers/solenoid.h"
 #include "drivers/can_interrupt.h"
 #include "game.h"
+/////////////////////////////////////////////
 
 
-// TODO: fix ADC channels in comments
-
-
-
-int main(){
+void init_all(){
     SystemInit();
     WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
     // CAN0->CAN_IDR = 0xffffffff; //Disable interrupts for debugging
@@ -41,14 +38,16 @@ int main(){
 
     motor_init();
     solenoid_init();
+}
 
+int main(){
+    init_all();
 
     CAN_MESSAGE msg = {
         .id = CAN_ID_NOP,
         .data_length = 0,
         .data = {}
     };
-
 
     while (1){    
         can_interrupt_process(&msg);

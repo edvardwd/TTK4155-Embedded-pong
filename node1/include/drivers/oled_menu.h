@@ -25,11 +25,11 @@ typedef struct {
 } menu_t;
 
 
-void add_menu_elem_w_sub(menu_t *menu, const char *title, menu_t *parent);
-void add_menu_elem_w_func(menu_t *menu, const char *title, menu_func_t action, menu_t *parent);
-menu_t* init_menu(void);
-void navigate_menu(menu_t *m);
-void oled_print_menu(menu_t *m);
+// void add_menu_elem_w_sub(menu_t *menu, const char *title, menu_t *parent);
+// void add_menu_elem_w_func(menu_t *menu, const char *title, menu_func_t action, menu_t *parent);
+menu_t* oled_menu_init();
+void oled_menu_navigate(menu_t *m);
+void oled_menu_print(menu_t *m);
 
 /////////////////////////////////////////////
 #endif

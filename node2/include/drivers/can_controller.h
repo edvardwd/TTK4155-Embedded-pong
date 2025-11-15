@@ -11,10 +11,11 @@
 
 #ifndef CAN_CONTROLLER_H_
 #define CAN_CONTROLLER_H_
+/////////////////////////////////////////////
 
 #include <stdint.h>
 #include "can_controller.h"
-
+/////////////////////////////////////////////
 
 typedef enum {
 	CAN_ID_NOP =  0x00,
@@ -22,8 +23,7 @@ typedef enum {
 	CAN_ID_IR = 0x2a,
 	CAN_ID_JOYSTICK_BUTTON = 0x31,
 	CAN_ID_JOYSTICK = 0x43,
-	CAN_ID_SOLENOID = 0x45,
-	CAN_ID_ERROR = 0x49
+	CAN_ID_ERROR = 0x45
 } can_id_t;
 
 
@@ -43,5 +43,5 @@ void can_print_message(CAN_MESSAGE *msg);
 
 void can_send_id(can_id_t id);
 
-
+/////////////////////////////////////////////
 #endif /* CAN_CONTROLLER_H_ */

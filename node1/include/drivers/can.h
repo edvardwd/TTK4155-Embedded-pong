@@ -17,8 +17,7 @@ typedef enum {
 	CAN_ID_IR = 0x2a,
 	CAN_ID_JOYSTICK_BUTTON = 0x31,
 	CAN_ID_JOYSTICK = 0x43,
-	CAN_ID_SOLENOID = 0x45,
-	CAN_ID_ERROR = 0x49
+	CAN_ID_ERROR = 0x45
 } can_id_t;
 
 typedef struct{

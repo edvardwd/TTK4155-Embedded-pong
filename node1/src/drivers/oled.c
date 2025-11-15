@@ -1,38 +1,6 @@
 #include "drivers/oled.h"
 /////////////////////////////////////////////
 
-
-
-// static struct{
-//     const unsigned char* font;
-//     uint8_t width;
-// } SELECTED_FONT = {
-//     .font = font5, // Normal sized font by default
-//     .width = 5
-// };
-
-
-// void oled_set_font(oled_font_t font){
-// switch (font){
-//     case small:
-//         SELECTED_FONT.font = font4;
-//         SELECTED_FONT.width = 4;
-//         break;
-
-//     case normal:
-//         SELECTED_FONT.font = font5;
-//         SELECTED_FONT.width = 5;
-//         break;
-//     case large:
-//         SELECTED_FONT.font = font8;
-//         SELECTED_FONT.width = 8;
-//         break;
-//     default:
-//         SELECTED_FONT.font = font5;
-//         SELECTED_FONT.width = 5;
-// }
-// }
-
 void oled_write_cmd(uint8_t cmd) {
     PORTB &= ~(1 << DATA_N_C);           // Set command-mode first (D/C = 0)
     spi_master_select_slave(DISP_SS_PIN); // CS low
@@ -156,11 +124,6 @@ void oled_reset() {
     oled_init_minimal();
 }
 
-
-void oled_home();
-
-
-
 void oled_print_char(uint8_t line, uint8_t col, char c){
     // Choose default font
     // TODO: make configurable
@@ -182,7 +145,6 @@ void oled_print(uint8_t line, uint8_t col, const char* msg){
         col += FONT_WIDTH + 1; // Font width spacing between letters
     }
 }
-void oled_set_brightness(uint8_t level); 
 
 void oled_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1) {
     // Draws a line on the display from (x0, y0) to (x1, y1)
@@ -213,7 +175,6 @@ void oled_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1) {
     }
 
 }
-
 
 
 void oled_circle(uint8_t x0, uint8_t y0, uint8_t r){

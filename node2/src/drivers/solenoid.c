@@ -1,5 +1,6 @@
 #include "drivers/solenoid.h"
 #include "drivers/encoder.h"
+/////////////////////////////////////////////
 
 void solenoid_init(){
     PIOA->PIO_PER |= SOLENOID_PIN;

@@ -1,5 +1,5 @@
 #include "drivers/motor.h"
-
+/////////////////////////////////////////////
 
 void motor_init(){
     PIOC->PIO_PER |= MOTOR_DIR_PIN; //Set P23 as I/O
@@ -33,8 +33,6 @@ int32_t motor_pid(int32_t error){
     ERROR = (ERROR < -5000) ? -5000 : (ERROR > 5000) ? 5000 : ERROR; // Anti windup
     
     int32_t u = (int32_t) (K_P * abs(error) + PERIOD * K_I  * abs(ERROR));
-    // printf("ERROR: %d \n\r", ERROR);
-    // printf("U: %d \r\n", u);
     return u;
 }
 

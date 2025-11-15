@@ -1,5 +1,5 @@
 #include "drivers/ir.h"
-
+/////////////////////////////////////////////
 
 void ir_init(){
     // Enable clock for ADC
@@ -27,7 +27,6 @@ uint16_t ir_read(){
 
 uint8_t ir_detect_crossing(){
     // Returns 1 if IR detects a crossing, else 0
-    // TODO: fix bug related to bouncing
     static uint8_t detected_counter = 0;
     uint16_t ir_val = ir_read();
     detected_counter = (ir_val >= IR_ADC_THRESHOLD) ? 0 : ((detected_counter == 255) ? 6 : detected_counter + 1);

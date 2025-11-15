@@ -1,15 +1,17 @@
 #ifndef MOTOR_H
 #define MOTOR_H
-#define MOTOR_DIR_PIN (1 << 23) //PC23
-#define K_P 1e-2f
-#define PERIOD 1e-2f
-#define K_I 8e-2f
+/////////////////////////////////////////////
 
 #include "sam3x8e.h"
 #include "pwm.h"
 #include "encoder.h"
+/////////////////////////////////////////////
 
-
+#define MOTOR_DIR_PIN (1 << 23) //PC23
+#define K_P 1e-2f
+#define PERIOD 1e-2f
+#define K_I 8e-2f
+/////////////////////////////////////////////
 
 typedef enum {
   REVERSE,
@@ -23,4 +25,5 @@ void motor_go_to_pos(int32_t pos);
 void motor_move(int32_t pad_x);
 int32_t motor_pid(int32_t error);
 
+/////////////////////////////////////////////
 #endif

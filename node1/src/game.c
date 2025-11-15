@@ -1,5 +1,5 @@
 #include "game.h"
-
+/////////////////////////////////////////////
 
 void game_intro_message(){
     oled_clear_disp();
@@ -17,21 +17,28 @@ void game_intro_message(){
         oled_print(i*8, 0, lines[i]);
     }
 }
-void game_over_message(){
+void game_over_message(uint8_t score){
     oled_clear_disp();
-    unsigned char* lines[2] = {
-        "Game over!"
-        ""
+    char buf[32];
+    sprintf(buf, "Final score: %u", score);
+
+    unsigned char* lines[4] = {
+        "Game over!",
+        buf,
+        "",
+        "Click for menu"
     };
     
-    for (uint8_t i = 0; i < 2; i++){
+    for (uint8_t i = 0; i < 4; i++){
         oled_print(i*8, 0, lines[i]);
     }
-    while (1) _delay_ms(50);
+    while (!joystick_get_button_pressed()); // wait for click
+    // while (1) _delay_ms(50);
 }
 
 void game_play(){
     can_message_t msg;
+    uint8_t score = 0;
 
     game_intro_message();
     _delay_ms(500); // 3s to read
@@ -73,6 +80,7 @@ void game_play(){
         if (id == CAN_ID_ERROR) can_print_message(&msg);
         else if (id == CAN_ID_IR){
             uint8_t lives_remaining = msg.data[0];
+            score = msg.data[1];
             char buf[32];
             sprintf(buf, "Lives remaining: %u", lives_remaining);
             oled_clear_line(8);
@@ -90,5 +98,5 @@ void game_play(){
             return;
         }
     }
-    game_over_message();
+    game_over_message(score);
 }
