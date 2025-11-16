@@ -4,7 +4,7 @@ https://github.com/edvardwd/TTK4155-Embedded-pong
 **Lab group**: 2\
 **Group members:**
 - Einar Augestad
-- Edvard Dingsør
+- Edvard Wekre Dingsør
 - Matheus Ullmann
 
 ## Project info
