@@ -12,7 +12,7 @@ void game_loop(){
     game_state_t state = GAME_STATE_PLAYING;
 
     uint8_t n_lives = 3;
-    uint8_t score = 0;
+    uint16_t score = 0; // 16 bits should be enough
     uint32_t game_last_start_time = time_now();
      
     CAN_MESSAGE msg = {
@@ -48,9 +48,7 @@ void game_loop(){
 
                 // Update state and score
                 state = (n_lives) ? GAME_STATE_PAUSED : GAME_STATE_GAME_OVER;
-                uint32_t game_pause_time = time_now();
-                score = min(255, score + totalSeconds(game_pause_time - game_last_start_time));
-                game_last_start_time = game_pause_time;
+                score = (uint16_t) min(255, score + totalSeconds((uint32_t) time_now() - game_last_start_time));
                 
                 msg.id = CAN_ID_IR;
                 msg.data_length = 2;
@@ -65,7 +63,11 @@ void game_loop(){
             break;
             
         case GAME_STATE_PAUSED:
-            if (msg.id == CAN_ID_JOYSTICK_BUTTON) state = GAME_STATE_PLAYING;
+            if (msg.id == CAN_ID_JOYSTICK_BUTTON){
+                state = GAME_STATE_PLAYING;
+                game_last_start_time = time_now();
+            }
+                
             break;
         
         case GAME_STATE_GAME_OVER:

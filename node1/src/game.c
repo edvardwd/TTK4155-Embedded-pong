@@ -41,7 +41,7 @@ void game_play(){
     uint8_t score = 0;
 
     game_intro_message();
-    _delay_ms(500); // 3s to read
+    _delay_ms(3000); // 3s to read
 
     oled_clear_disp();
     oled_print(0, 0, "Calibrating..");

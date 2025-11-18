@@ -21,7 +21,7 @@ void init_all(){
 
     // Uncomment after including uart above
     uart_init(F_CPU, 9600);
-    printf("Node 2 starting...\n\r");
+    printf("Node 2 starting...\r\n");
 
     uint32_t can_br =
     (20  << 16) |   // BRP
