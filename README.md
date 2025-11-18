@@ -9,7 +9,7 @@
 This repository contains code for the [TTK4155 Embedded and Industrial Computer Systems Design](https://www.ntnu.edu/studies/courses/TTK4155) course at NTNU, and answers the lab assignments for the fall semester of 2025. The project implements a simple pong game where two nodes communicate over CAN bus to play the game. `Node 1` handles user input through an IO-board while `Node 2` handles the motor, solenoid and servo control.
 
 ## Demo
-![gif](./demo.gif)
+<video src="./demo.mp4" controls></video>
 
 
 ### How to run Node 1 tests
